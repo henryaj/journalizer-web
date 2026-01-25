@@ -1,0 +1,36 @@
+<h1>Dashboard</h1>
+
+<div class="stats">
+  <p><strong>Credit Balance:</strong> <%= @credit_balance %> pages</p>
+  <p><%= link_to "Buy more credits", new_payment_path %></p>
+</div>
+
+<h2>Recent Entries</h2>
+<% if @recent_entries.any? %>
+  <ul>
+    <% @recent_entries.each do |entry| %>
+      <li>
+        <%= entry.entry_date.strftime("%B %d, %Y") %>
+        <% if entry.synced %>
+          <span class="badge">Synced</span>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>No journal entries yet. Upload some photos to get started!</p>
+<% end %>
+
+<% if @pending_jobs.any? %>
+  <h2>Processing</h2>
+  <ul>
+    <% @pending_jobs.each do |job| %>
+      <li>
+        Job #<%= job.id %>: <%= job.status %> (<%= job.page_count %> pages)
+      </li>
+    <% end %>
+  </ul>
+<% end %>
+
+<h2>API Access</h2>
+<p><%= link_to "Manage API Tokens", api_tokens_path %> (for Obsidian plugin)</p>

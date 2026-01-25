@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   get "/auth/failure", to: "omniauth_callbacks#failure"
 
   # Web dashboard
+  resources :uploads, only: [:new, :create]
   resources :api_tokens, only: [:index, :create, :destroy]
   resources :payments, only: [:new, :create] do
     collection do

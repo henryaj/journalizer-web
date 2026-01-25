@@ -1,0 +1,72 @@
+<div class="upload-container">
+  <div class="upload-header">
+    <h1 class="upload-title">Upload Journal Pages</h1>
+    <p class="upload-subtitle">Take photos or select images of your handwritten journal pages</p>
+  </div>
+
+  <%= form_with url: uploads_path, method: :post, multipart: true, id: "upload-form", class: "upload-form", data: { controller: "upload" } do |f| %>
+    <div class="upload-zone" data-upload-target="dropzone">
+      <div class="upload-zone-content" data-upload-target="placeholder">
+        <div class="upload-icon">📷</div>
+        <p class="upload-prompt">Tap to take a photo or select images</p>
+        <p class="upload-hint">Supports JPG, PNG, HEIC</p>
+      </div>
+      
+      <div class="preview-grid" data-upload-target="previewGrid" style="display: none;"></div>
+      
+      <input type="file" 
+             name="images[]" 
+             id="images" 
+             accept="image/*" 
+             capture="environment"
+             multiple
+             data-upload-target="input"
+             data-action="change->upload#handleFiles"
+             class="upload-input">
+    </div>
+
+    <div class="orientation-section">
+      <label class="form-label">Photo Orientation</label>
+      <p class="form-hint">If your photos appear rotated, select the correct orientation</p>
+      <div class="orientation-options">
+        <label class="orientation-option">
+          <input type="radio" name="orientation" value="0" checked>
+          <span class="orientation-preview">
+            <span class="orientation-icon">📄</span>
+            <span>Normal</span>
+          </span>
+        </label>
+        <label class="orientation-option">
+          <input type="radio" name="orientation" value="90">
+          <span class="orientation-preview">
+            <span class="orientation-icon" style="transform: rotate(90deg);">📄</span>
+            <span>90° CW</span>
+          </span>
+        </label>
+        <label class="orientation-option">
+          <input type="radio" name="orientation" value="180">
+          <span class="orientation-preview">
+            <span class="orientation-icon" style="transform: rotate(180deg);">📄</span>
+            <span>180°</span>
+          </span>
+        </label>
+        <label class="orientation-option">
+          <input type="radio" name="orientation" value="270">
+          <span class="orientation-preview">
+            <span class="orientation-icon" style="transform: rotate(270deg);">📄</span>
+            <span>90° CCW</span>
+          </span>
+        </label>
+      </div>
+    </div>
+
+    <div class="upload-actions">
+      <div class="credit-info">
+        <span class="credit-balance"><%= Current.user.credit_balance %> credits available</span>
+        <span class="credit-cost" data-upload-target="costDisplay">Select images to see cost</span>
+      </div>
+      
+      <%= f.submit "Upload & Transcribe", class: "btn btn-primary btn-large btn-full", data: { upload_target: "submit" }, disabled: true %>
+    </div>
+  <% end %>
+</div>

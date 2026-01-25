@@ -22,8 +22,8 @@ class PaymentsController < ApplicationController
         quantity: 1
       }],
       mode: "payment",
-      success_url: payments_success_url + "?session_id={CHECKOUT_SESSION_ID}",
-      cancel_url: payments_cancel_url,
+      success_url: success_payments_url + "?session_id={CHECKOUT_SESSION_ID}",
+      cancel_url: cancel_payments_url,
       metadata: {
         user_id: Current.user.id,
         pages: package[:pages]

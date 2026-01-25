@@ -26,7 +26,7 @@
   --color-gray-700: #374151;
   --color-gray-800: #1f2937;
   --color-gray-900: #111827;
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-sans: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
@@ -42,6 +42,15 @@ body {
   color: var(--color-gray-800);
   background: var(--color-gray-50);
   min-height: 100vh;
+}
+
+/* Dot grid background for landing page */
+.main-content-full {
+  background:
+    radial-gradient(circle, var(--color-gray-300) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--color-gray-50), white 300px);
+  background-size: 24px 24px, 100% 100%;
+  background-position: 12px 12px, 0 0;
 }
 
 a {
@@ -419,21 +428,41 @@ a:hover {
   margin: 0 auto;
 }
 
+.landing-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.landing-logo-icon {
+  width: 48px;
+  height: 48px;
+}
+
+.landing-logo-text {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: -0.02em;
+}
+
 .landing-title {
-  font-size: 3rem;
+  font-size: 3.5rem;
   font-weight: 700;
   color: var(--color-gray-900);
-  margin-bottom: 1rem;
-  line-height: 1.2;
+  margin-bottom: 1.25rem;
+  line-height: 1.15;
 }
 
 .landing-subtitle {
-  font-size: 1.25rem;
+  font-size: 1.375rem;
   color: var(--color-gray-600);
   margin-bottom: 2rem;
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
+  line-height: 1.5;
 }
 
 .landing-cta {
@@ -456,7 +485,7 @@ a:hover {
   background: white;
   padding: 2rem;
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow);
+  box-shadow: 0 4px 20px -2px rgb(0 0 0 / 0.1), 0 2px 8px -2px rgb(0 0 0 / 0.08);
 }
 
 .feature-icon {
@@ -473,7 +502,7 @@ a:hover {
 }
 
 .feature-title {
-  font-size: 1.125rem;
+  font-size: 1.25rem;
   font-weight: 600;
   color: var(--color-gray-900);
   margin-bottom: 0.5rem;
@@ -481,6 +510,96 @@ a:hover {
 
 .feature-desc {
   color: var(--color-gray-600);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+
+/* Landing Pricing */
+.landing-pricing {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+}
+
+.landing-pricing-card {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  border-radius: var(--radius-lg);
+  padding: 3rem 2rem;
+  text-align: center;
+  color: white;
+  box-shadow: 0 4px 20px -2px rgb(99 102 241 / 0.3);
+}
+
+.landing-pricing-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.landing-pricing-subtitle {
+  opacity: 0.9;
+  margin-bottom: 2rem;
+}
+
+.landing-pricing-amount {
+  font-size: 4rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.landing-pricing-unit {
+  opacity: 0.8;
+  font-size: 1.125rem;
+  margin-top: 0.25rem;
+}
+
+.landing-pricing-note {
+  opacity: 0.85;
+  margin-top: 1.5rem;
+  font-size: 0.9375rem;
+}
+
+/* Landing Open Source */
+.landing-opensource {
+  border-top: 1px solid var(--color-gray-200);
+  border-bottom: 1px solid var(--color-gray-200);
+  background: white;
+  padding: 4rem 2rem;
+}
+
+.landing-opensource-inner {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.landing-opensource-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.landing-opensource-desc {
+  color: var(--color-gray-600);
+  margin-bottom: 2rem;
+  font-size: 1.0625rem;
+}
+
+.landing-opensource-list {
+  text-align: left;
+  max-width: 500px;
+  margin: 0 auto;
+  color: var(--color-gray-600);
+  list-style: none;
+}
+
+.landing-opensource-list li {
+  margin-bottom: 0.75rem;
+  font-size: 1.0625rem;
+}
+
+.landing-opensource-list li:last-child {
+  margin-bottom: 0;
 }
 
 /* Dashboard */
@@ -1292,12 +1411,21 @@ tr:hover td {
     justify-content: flex-end;
   }
 
+  .landing-logo-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .landing-logo-text {
+    font-size: 1.5rem;
+  }
+
   .landing-title {
-    font-size: 2rem;
+    font-size: 2.25rem;
   }
 
   .landing-subtitle {
-    font-size: 1rem;
+    font-size: 1.125rem;
   }
 
   .main-content {

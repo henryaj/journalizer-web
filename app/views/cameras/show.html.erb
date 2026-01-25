@@ -1,0 +1,62 @@
+<% content_for :head do %>
+  <style>
+    body.camera-page { background: black; }
+    body.camera-page .navbar { display: none; }
+    body.camera-page .main-content { padding: 0; max-width: none; }
+  </style>
+<% end %>
+
+<div class="camera-container" data-controller="camera">
+  <!-- Camera Preview -->
+  <div class="camera-preview">
+    <video data-camera-target="video" autoplay playsinline muted></video>
+    <div class="camera-loading" data-camera-target="loading">
+      <div class="camera-loading-spinner"></div>
+      <p>Starting camera...</p>
+    </div>
+    <div class="camera-error" data-camera-target="error" style="display: none;">
+      <p class="camera-error-message" data-camera-target="errorMessage"></p>
+      <%= link_to "Upload files instead", new_upload_path, class: "btn btn-primary" %>
+    </div>
+  </div>
+
+  <!-- Captured Images Strip -->
+  <div class="camera-strip" data-camera-target="strip" style="display: none;">
+    <div class="camera-strip-inner" data-camera-target="stripInner"></div>
+    <div class="camera-strip-count" data-camera-target="count">0 pages</div>
+  </div>
+
+  <!-- Camera Controls -->
+  <div class="camera-controls" data-camera-target="controls">
+    <div class="camera-controls-top">
+      <%= link_to "✕", dashboard_path, class: "camera-close" %>
+      <div class="camera-orientation" data-camera-target="orientationToggle">
+        <button type="button" class="orientation-toggle" data-action="click->camera#cycleOrientation" data-camera-target="orientationBtn">
+          <span class="orientation-value" data-camera-target="orientationLabel">0°</span>
+        </button>
+      </div>
+      <%= link_to "📁", new_upload_path, class: "camera-files" %>
+    </div>
+
+    <div class="camera-controls-bottom">
+      <button type="button" class="camera-flip" data-action="click->camera#flipCamera" data-camera-target="flipBtn" title="Flip camera">
+        🔄
+      </button>
+      <button type="button" class="camera-shutter" data-action="click->camera#capture" data-camera-target="shutter">
+        <span class="shutter-inner"></span>
+      </button>
+      <button type="button" class="camera-done btn btn-primary" data-action="click->camera#done" data-camera-target="doneBtn" style="visibility: hidden;">
+        Done
+      </button>
+    </div>
+  </div>
+
+  <!-- Hidden form for submission -->
+  <%= form_with url: uploads_path, method: :post, multipart: true, id: "camera-form", data: { camera_target: "form" } do |f| %>
+    <input type="hidden" name="orientation" data-camera-target="orientationInput" value="0">
+    <div data-camera-target="filesContainer"></div>
+  <% end %>
+
+  <!-- Hidden canvas for capture -->
+  <canvas data-camera-target="canvas" style="display: none;"></canvas>
+</div>

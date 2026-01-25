@@ -769,6 +769,37 @@ tr:hover td {
   color: var(--color-gray-600);
 }
 
+.upload-mode-switch {
+  margin-bottom: 1.5rem;
+}
+
+.mode-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: var(--color-primary);
+  color: white;
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.mode-option:hover {
+  background: var(--color-primary-dark);
+  color: white;
+}
+
+.mode-icon {
+  font-size: 1.25rem;
+}
+
+.mode-label {
+  font-size: 1rem;
+}
+
 .upload-zone {
   background: white;
   border: 2px dashed var(--color-gray-300);
@@ -861,52 +892,298 @@ tr:hover td {
   background: var(--color-danger);
 }
 
-.orientation-section {
+.preview-container {
+  width: 100%;
+}
+
+.orientation-toolbar {
   margin-top: 1.5rem;
-  padding: 1.5rem;
-  background: white;
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
+  padding: 1rem;
+  background: var(--color-gray-800);
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
-.orientation-options {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.75rem;
-  margin-top: 1rem;
+.orientation-label {
+  color: white;
+  font-weight: 500;
+  font-size: 0.875rem;
 }
 
-.orientation-option {
+.orientation-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.orientation-btn {
   cursor: pointer;
 }
 
-.orientation-option input {
+.orientation-btn input {
   position: absolute;
   opacity: 0;
+  pointer-events: none;
 }
 
-.orientation-preview {
+.orientation-btn-inner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  background: var(--color-gray-700);
+  color: var(--color-gray-300);
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.15s;
+  min-width: 60px;
+}
+
+.orientation-btn:hover .orientation-btn-inner {
+  background: var(--color-gray-600);
+  color: white;
+}
+
+.orientation-btn input:checked + .orientation-btn-inner {
+  background: var(--color-primary);
+  color: white;
+}
+
+.add-more-btn {
+  margin-top: 1rem;
+  position: relative;
+  z-index: 10;
+}
+
+.preview-item.rotated-90 img {
+  transform: rotate(90deg);
+}
+
+.preview-item.rotated-180 img {
+  transform: rotate(180deg);
+}
+
+.preview-item.rotated-270 img {
+  transform: rotate(270deg);
+}
+
+/* Camera Page */
+.camera-container {
+  position: fixed;
+  inset: 0;
+  background: black;
+  display: flex;
+  flex-direction: column;
+}
+
+.camera-preview {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.camera-preview video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.camera-loading,
+.camera-error {
+  position: absolute;
+  inset: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  color: white;
+  text-align: center;
+  padding: 2rem;
+}
+
+.camera-loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.camera-error-message {
+  font-size: 1.125rem;
+  margin-bottom: 1rem;
+}
+
+.camera-strip {
+  background: rgba(0,0,0,0.8);
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.camera-strip-inner {
+  display: flex;
   gap: 0.5rem;
-  padding: 1rem 0.5rem;
-  border: 2px solid var(--color-gray-200);
-  border-radius: var(--radius);
-  transition: all 0.2s;
+  overflow-x: auto;
+  flex: 1;
+}
+
+.strip-item {
+  position: relative;
+  width: 60px;
+  height: 80px;
+  flex-shrink: 0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.strip-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.strip-remove {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 20px;
+  height: 20px;
+  background: rgba(0,0,0,0.7);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.camera-strip-count {
+  color: white;
   font-size: 0.875rem;
-  color: var(--color-gray-600);
+  font-weight: 500;
+  white-space: nowrap;
 }
 
-.orientation-option input:checked + .orientation-preview {
-  border-color: var(--color-primary);
-  background: var(--color-gray-50);
-  color: var(--color-primary);
+.camera-controls {
+  background: black;
+  padding: 1rem;
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
 }
 
-.orientation-icon {
+.camera-controls-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.camera-close,
+.camera-files {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.25rem;
+  text-decoration: none;
+  background: rgba(255,255,255,0.1);
+  border-radius: 50%;
+}
+
+.camera-close:hover,
+.camera-files:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+.orientation-toggle {
+  background: rgba(255,255,255,0.15);
+  border: 2px solid rgba(255,255,255,0.3);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  min-width: 70px;
+}
+
+.orientation-toggle:hover {
+  background: rgba(255,255,255,0.25);
+  border-color: rgba(255,255,255,0.5);
+}
+
+.camera-controls-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.camera-flip {
+  width: 50px;
+  height: 50px;
+  background: rgba(255,255,255,0.1);
+  border: none;
+  border-radius: 50%;
   font-size: 1.5rem;
-  display: inline-block;
+  cursor: pointer;
+}
+
+.camera-flip:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+.camera-shutter {
+  width: 72px;
+  height: 72px;
+  background: white;
+  border: 4px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.1s;
+}
+
+.camera-shutter:hover {
+  transform: scale(1.05);
+}
+
+.camera-shutter:active,
+.camera-shutter.flash {
+  transform: scale(0.95);
+  background: var(--color-gray-200);
+}
+
+.shutter-inner {
+  width: 58px;
+  height: 58px;
+  background: white;
+  border-radius: 50%;
+  border: 2px solid var(--color-gray-300);
+}
+
+.camera-done {
+  min-width: 80px;
 }
 
 .upload-actions {

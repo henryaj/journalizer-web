@@ -55,21 +55,39 @@
 <% end %>
 
 <div class="section mt-8">
-  <h2 class="section-title">Recent Entries</h2>
-  <div class="card">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <h2 class="section-title" style="margin-bottom: 0;">Recent Entries</h2>
+    <% if @recent_entries.any? %>
+      <%= link_to export_path, method: :post, class: "btn btn-secondary btn-small" do %>
+        &#128230; Export All (ZIP)
+      <% end %>
+    <% end %>
+  </div>
+  <div class="card" style="margin-top: 1rem;">
     <% if @recent_entries.any? %>
       <ul class="entry-list">
         <% @recent_entries.each do |entry| %>
           <li class="entry-item">
             <div>
-              <span class="entry-date"><%= entry.entry_date.strftime("%B %d, %Y") %></span>
+              <span class="entry-date"><%= entry.entry_date&.strftime("%B %d, %Y") || entry.title %></span>
               <span class="entry-meta"> - <%= truncate(entry.content, length: 60) %></span>
             </div>
-            <% if entry.synced %>
-              <span class="badge badge-success">Synced</span>
-            <% else %>
-              <span class="badge badge-info">Pending sync</span>
-            <% end %>
+            <div class="entry-actions">
+              <% days = entry.days_until_expiry %>
+              <% if days && days > 0 %>
+                <span class="badge badge-<%= entry.expiry_urgency == :ok ? 'success' : (entry.expiry_urgency == :warning ? 'warning' : 'danger') %>">
+                  Expires in <%= days %> <%= 'day'.pluralize(days) %>
+                </span>
+              <% end %>
+              <% if entry.synced %>
+                <span class="badge badge-success">Synced</span>
+              <% else %>
+                <span class="badge badge-info">Pending sync</span>
+              <% end %>
+              <%= link_to download_entry_path(entry), class: "btn btn-secondary btn-small", title: "Download as Markdown" do %>
+                &#8595; MD
+              <% end %>
+            </div>
           </li>
         <% end %>
       </ul>

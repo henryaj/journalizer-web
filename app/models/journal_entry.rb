@@ -46,6 +46,19 @@ class JournalEntry < ApplicationRecord
     update!(synced: true)
   end
 
+  def days_until_expiry
+    return nil unless expires_at
+    ((expires_at - Time.current) / 1.day).ceil
+  end
+
+  def expiry_urgency
+    days = days_until_expiry
+    return :expired if days.nil? || days <= 0
+    return :critical if days <= 7
+    return :warning if days <= 14
+    :ok
+  end
+
   private
 
   def set_expiration

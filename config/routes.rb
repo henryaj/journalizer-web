@@ -12,6 +12,12 @@ Rails.application.routes.draw do
   resource :camera, only: [:show]
   resources :uploads, only: [:new, :create]
   resources :api_tokens, only: [:index, :create, :destroy]
+  resources :entries, only: [] do
+    member do
+      get :download
+    end
+  end
+  resource :export, only: [:create]
   resources :payments, only: [:new, :create] do
     collection do
       get :success

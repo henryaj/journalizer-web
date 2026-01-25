@@ -10,7 +10,7 @@ namespace :admin do
       exit 1
     end
 
-    user.send(:add_credits!, amount, type: "manual")
+    user.send(:add_credits!, amount, type: "bonus")
     puts "Added #{amount} credits to #{email}. New balance: #{user.reload.credit_balance}"
   end
 end

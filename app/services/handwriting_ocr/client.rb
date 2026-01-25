@@ -1,9 +1,4 @@
 module HandwritingOcr
-  class Error < StandardError; end
-  class RateLimitError < Error; end
-  class UploadError < Error; end
-  class TimeoutError < Error; end
-
   class Client
     BASE_URL = "https://www.handwritingocr.com/api/v3/documents".freeze
 

@@ -1,29 +1,66 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title><%= content_for(:title) || "Journalizer Web" %></title>
+    <title><%= content_for(:title) || "Journalizer" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="Journalizer Web">
+    <meta name="application-name" content="Journalizer">
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="description" content="Transcribe handwritten journal entries and sync to Obsidian">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
     <%= yield :head %>
 
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
-
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
   <body>
-    <%= yield %>
+    <% if authenticated? %>
+      <nav class="navbar">
+        <div class="nav-brand">
+          <%= link_to "Journalizer", root_path %>
+        </div>
+        <div class="nav-links">
+          <%= link_to "Dashboard", root_path, class: "nav-link" %>
+          <%= link_to "Buy Credits", new_payment_path, class: "nav-link" %>
+          <%= link_to "API Tokens", api_tokens_path, class: "nav-link" %>
+        </div>
+        <div class="nav-user">
+          <% if Current.user.avatar_url.present? %>
+            <img src="<%= Current.user.avatar_url %>" alt="" class="avatar">
+          <% end %>
+          <span class="user-name"><%= Current.user.display_name %></span>
+          <span class="credit-badge"><%= Current.user.credit_balance %> credits</span>
+          <%= button_to "Sign out", session_path, method: :delete, class: "btn btn-small btn-ghost" %>
+        </div>
+      </nav>
+    <% end %>
+
+    <% if flash[:notice] %>
+      <div class="flash flash-notice"><%= flash[:notice] %></div>
+    <% end %>
+    <% if flash[:alert] %>
+      <div class="flash flash-alert"><%= flash[:alert] %></div>
+    <% end %>
+
+    <main class="<%= authenticated? ? 'main-content' : 'main-content-full' %>">
+      <%= yield %>
+    </main>
+
+    <% unless authenticated? %>
+      <footer class="footer">
+        <p>Journalizer is <a href="https://github.com/henryaj/journalizer-web" target="_blank">open source</a>. Your data is yours.</p>
+      </footer>
+    <% end %>
   </body>
 </html>

@@ -4,6 +4,10 @@ Rails.application.routes.draw do
   resource :registration, only: [:new, :create]
   resources :passwords, param: :token
 
+  # OAuth callbacks
+  get "/auth/:provider/callback", to: "omniauth_callbacks#google_oauth2", as: :omniauth_callback
+  get "/auth/failure", to: "omniauth_callbacks#failure"
+
   # Web dashboard
   resources :api_tokens, only: [:index, :create, :destroy]
   resources :payments, only: [:new, :create] do
@@ -46,6 +50,6 @@ Rails.application.routes.draw do
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
-  # Root path - redirect to dashboard if logged in, otherwise show landing
-  root "dashboard#show"
+  # Root path - show landing for visitors, redirect to dashboard for logged in users
+  root "home#index"
 end

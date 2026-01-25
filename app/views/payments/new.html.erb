@@ -1,0 +1,37 @@
+<div class="page-header">
+  <h1 class="page-title">Buy Credits</h1>
+  <p class="page-subtitle">Current balance: <strong><%= @credit_balance %> credits</strong></p>
+</div>
+
+<p style="color: var(--color-gray-600); margin-bottom: 2rem;">
+  Credits are used to transcribe your handwritten journal pages. Each page costs 1 credit.
+  Buy more to save!
+</p>
+
+<div class="pricing-grid">
+  <% @packages.each do |key, package| %>
+    <div class="pricing-card <%= 'popular' if key == '50' %>">
+      <div class="pricing-pages"><%= package[:pages] %> <span>pages</span></div>
+      <div class="pricing-price">$<%= "%.2f" % (package[:price_cents] / 100.0) %></div>
+      <div class="pricing-per-page">
+        $<%= "%.2f" % (package[:price_cents] / 100.0 / package[:pages]) %> per page
+        <% if key == '50' %>
+          <br><span style="color: var(--color-success);">Save 10%</span>
+        <% elsif key == '100' %>
+          <br><span style="color: var(--color-success);">Save 20%</span>
+        <% end %>
+      </div>
+      <%= button_to "Buy #{package[:pages]} credits", payments_path(package: key), class: "btn btn-primary btn-full" %>
+    </div>
+  <% end %>
+</div>
+
+<div class="card mt-8">
+  <h3 class="card-title">How it works</h3>
+  <ul style="margin-top: 1rem; margin-left: 1.5rem; color: var(--color-gray-600);">
+    <li>Credits never expire</li>
+    <li>Each journal page = 1 credit</li>
+    <li>Multi-page entries use 1 credit per page</li>
+    <li>Failed transcriptions are refunded automatically</li>
+  </ul>
+</div>

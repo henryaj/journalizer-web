@@ -1,0 +1,73 @@
+<div class="landing-hero">
+  <h1 class="landing-title">Turn handwritten journals<br>into digital memories</h1>
+  <p class="landing-subtitle">
+    Photograph your handwritten journal pages, and we'll transcribe them using AI.
+    Sync directly to your Obsidian vault.
+  </p>
+  <div class="landing-cta">
+    <%= link_to "Get started free", new_registration_path, class: "btn btn-primary btn-large" %>
+    <%= link_to "Sign in", new_session_path, class: "btn btn-secondary btn-large" %>
+  </div>
+</div>
+
+<div class="landing-features">
+  <div class="feature-card">
+    <div class="feature-icon">&#128247;</div>
+    <h3 class="feature-title">Snap a photo</h3>
+    <p class="feature-desc">
+      Take a photo of your handwritten journal page. Our AI handles messy handwriting beautifully.
+    </p>
+  </div>
+
+  <div class="feature-card">
+    <div class="feature-icon">&#129302;</div>
+    <h3 class="feature-title">AI transcription</h3>
+    <p class="feature-desc">
+      Advanced OCR extracts your text, detects dates, and even splits multiple entries automatically.
+    </p>
+  </div>
+
+  <div class="feature-card">
+    <div class="feature-icon">&#128218;</div>
+    <h3 class="feature-title">Sync to Obsidian</h3>
+    <p class="feature-desc">
+      Our plugin syncs entries directly to your vault with proper formatting and frontmatter.
+    </p>
+  </div>
+</div>
+
+<div style="max-width: 800px; margin: 0 auto; padding: 4rem 2rem; text-align: center;">
+  <h2 style="font-size: 2rem; font-weight: 700; margin-bottom: 1rem;">Simple, pay-as-you-go pricing</h2>
+  <p style="color: var(--color-gray-600); margin-bottom: 2rem;">
+    No subscriptions. Just buy credits when you need them.
+  </p>
+  <div style="font-size: 3rem; font-weight: 700; color: var(--color-primary);">$0.10</div>
+  <div style="color: var(--color-gray-500);">per page</div>
+  <p style="color: var(--color-gray-600); margin-top: 1.5rem; font-size: 0.9375rem;">
+    Buy in bulk and save up to 20%. Credits never expire.
+  </p>
+</div>
+
+<div style="background: white; padding: 4rem 2rem;">
+  <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+    <h2 style="font-size: 2rem; font-weight: 700; margin-bottom: 1rem;">Open source & privacy-first</h2>
+    <p style="color: var(--color-gray-600); margin-bottom: 2rem;">
+      Journalizer is <a href="https://github.com/henryaj/journalizer-web" target="_blank">fully open source</a>.
+      Inspect the code yourself and verify we don't keep your data.
+    </p>
+    <ul style="text-align: left; max-width: 500px; margin: 0 auto; color: var(--color-gray-600);">
+      <li style="margin-bottom: 0.75rem;">&#10003; Entries auto-delete after 30 days</li>
+      <li style="margin-bottom: 0.75rem;">&#10003; No tracking or analytics</li>
+      <li style="margin-bottom: 0.75rem;">&#10003; Your data is never used for training</li>
+      <li>&#10003; Self-host if you prefer</li>
+    </ul>
+  </div>
+</div>
+
+<div style="max-width: 800px; margin: 0 auto; padding: 4rem 2rem; text-align: center;">
+  <h2 style="font-size: 2rem; font-weight: 700; margin-bottom: 1rem;">Ready to digitize your journals?</h2>
+  <p style="color: var(--color-gray-600); margin-bottom: 2rem;">
+    Create a free account and get started in minutes.
+  </p>
+  <%= link_to "Create free account", new_registration_path, class: "btn btn-primary btn-large" %>
+</div>

@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  has_secure_password
+  has_secure_password validations: false  # We handle password validation manually
   has_many :sessions, dependent: :destroy
   has_many :api_tokens, dependent: :destroy
   has_many :page_credits, dependent: :destroy
@@ -10,8 +10,33 @@ class User < ApplicationRecord
 
   validates :email_address, presence: true, uniqueness: true,
                             format: { with: URI::MailTo::EMAIL_REGEXP }
+  validates :password, presence: true, length: { minimum: 8 }, if: :password_required?
 
   class InsufficientCreditsError < StandardError; end
+
+  # Find or create user from OAuth data
+  def self.from_omniauth(auth)
+    where(provider: auth.provider, uid: auth.uid).first_or_create do |user|
+      user.email_address = auth.info.email
+      user.name = auth.info.name
+      user.avatar_url = auth.info.image
+      # No password for OAuth users
+    end
+  end
+
+  def oauth_user?
+    provider.present?
+  end
+
+  def display_name
+    name.presence || email_address.split("@").first
+  end
+
+  private
+
+  def password_required?
+    !oauth_user? && (new_record? || password.present?)
+  end
 
   def has_credits?(amount = 1)
     credit_balance >= amount

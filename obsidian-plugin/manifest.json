@@ -1,0 +1,10 @@
+{
+  "id": "journalizer-sync",
+  "name": "Journalizer Sync",
+  "version": "1.0.0",
+  "minAppVersion": "1.0.0",
+  "description": "Sync handwritten journal entries from Journalizer to your vault",
+  "author": "Henry Stanley",
+  "authorUrl": "https://github.com/henryaj",
+  "isDesktopOnly": false
+}

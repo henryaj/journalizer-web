@@ -39,6 +39,9 @@ gem "aws-sdk-s3", require: false
 # ZIP file creation for exports
 gem "rubyzip"
 
+# CORS for API access from Obsidian plugin
+gem "rack-cors"
+
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 

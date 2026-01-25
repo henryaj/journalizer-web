@@ -3,10 +3,10 @@ class JournalEntry < ApplicationRecord
   belongs_to :transcription_job, optional: true
   has_many_attached :images
 
-  validates :entry_date, presence: true
+  validates :title, presence: true
   validates :content, presence: true
 
-  scope :recent, -> { order(entry_date: :desc) }
+  scope :recent, -> { order(Arel.sql("COALESCE(entry_date, created_at::date) DESC")) }
   scope :expired, -> { where("expires_at < ?", Time.current) }
   scope :not_expired, -> { where("expires_at > ?", Time.current) }
   scope :unsynced, -> { where(synced: false) }
@@ -14,30 +14,29 @@ class JournalEntry < ApplicationRecord
   after_create :set_expiration
 
   def to_markdown
-    frontmatter = [
-      "---",
-      "date: #{entry_date.iso8601}",
-      "type: journal",
-      "source: #{source}",
-      "---"
-    ].join("\n")
+    frontmatter_lines = [ "---" ]
+    frontmatter_lines << "date: #{entry_date.iso8601}" if entry_date.present?
+    frontmatter_lines << "type: journal"
+    frontmatter_lines << "source: #{source}"
+    frontmatter_lines << "imported_at: #{created_at.iso8601}"
+    frontmatter_lines << "---"
+    frontmatter = frontmatter_lines.join("\n")
 
-    heading = entry_date.strftime("%B %d, %Y")
-
+    date_prefix = entry_date&.iso8601 || created_at.strftime("%Y%m%d%H%M%S")
     image_embeds = images.map.with_index do |img, i|
-      "![[journal-#{entry_date.iso8601}-#{i.to_s.rjust(3, '0')}.jpg]]"
+      "![[journal-#{date_prefix}-#{i.to_s.rjust(3, '0')}.jpg]]"
     end.join("\n")
 
     [
       frontmatter,
       "",
-      "# #{heading}",
+      "# #{title}",
       "",
       content,
       "",
       "---",
       "",
-      "*Transcribed from handwritten entry*",
+      "*Transcribed with [Journalizer](https://journalizer.me) on #{created_at.strftime("%B %d, %Y")}*",
       "",
       image_embeds
     ].join("\n")

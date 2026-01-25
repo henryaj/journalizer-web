@@ -26,7 +26,8 @@ class PostProcessJob < ApplicationJob
     entries_data.each do |entry_data|
       entry = job.journal_entries.create!(
         user: job.user,
-        entry_date: entry_data[:date] || Date.current,
+        title: entry_data[:title],
+        entry_date: entry_data[:date],
         content: entry_data[:text],
         date_detected: entry_data[:date].present?,
         image_indices: entry_data[:image_indices] || []

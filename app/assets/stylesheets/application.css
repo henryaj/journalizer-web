@@ -770,6 +770,12 @@ tr:hover td {
   color: var(--color-gray-600);
 }
 
+.upload-hint-date {
+  font-size: 0.8rem;
+  color: var(--color-gray-500);
+  margin-top: 0.25rem;
+}
+
 .upload-mode-switch {
   margin-bottom: 1.5rem;
 }

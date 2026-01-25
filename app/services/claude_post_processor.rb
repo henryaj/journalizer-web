@@ -14,13 +14,15 @@ class ClaudePostProcessor
     3. If there are multiple dated entries, split them
     4. Track which page(s) each entry spans (0-indexed)
     5. Convert dates to ISO format (YYYY-MM-DD). Infer the year from context (assume recent past if ambiguous).
+    6. Generate a brief title (3-8 words) summarizing the entry's main theme or topic
 
     Output JSON:
     {
       "entries": [
         {
+          "title": "Brief summary of the entry",
           "text": "The cleaned text...",
-          "date": "2024-12-25" or null,
+          "date": "2024-12-25" or null if no date found,
           "image_indices": [0] or [0, 1]
         }
       ]
@@ -55,6 +57,7 @@ class ClaudePostProcessor
     json_match = text.match(/\{[\s\S]*\}/)
     unless json_match
       return [{
+        title: "Journal Entry",
         text: text.strip,
         date: nil,
         image_indices: (0...page_count).to_a
@@ -65,6 +68,7 @@ class ClaudePostProcessor
 
     data["entries"].map do |entry|
       {
+        title: entry["title"] || "Journal Entry",
         text: entry["text"],
         date: parse_date(entry["date"]),
         image_indices: entry["image_indices"] || []
@@ -72,6 +76,7 @@ class ClaudePostProcessor
     end
   rescue JSON::ParserError
     [{
+      title: "Journal Entry",
       text: text.strip,
       date: nil,
       image_indices: (0...page_count).to_a

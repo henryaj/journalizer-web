@@ -39,7 +39,7 @@ class User < ApplicationRecord
   private
 
   def grant_signup_credits
-    add_credits!(FREE_SIGNUP_CREDITS, type: "signup_bonus")
+    add_credits!(FREE_SIGNUP_CREDITS, type: "bonus")
   end
 
   def password_required?

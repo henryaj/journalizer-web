@@ -38,5 +38,12 @@
       <p><%= link_to "Forgot password?", new_password_path %></p>
       <p class="mt-4">Don't have an account? <%= link_to "Sign up", new_registration_path %></p>
     </div>
+
+    <% if Rails.env.development? %>
+      <div class="auth-divider">
+        <span>development only</span>
+      </div>
+      <%= button_to "Dev Login", dev_login_path, method: :post, class: "btn btn-secondary btn-full" %>
+    <% end %>
   </div>
 </div>

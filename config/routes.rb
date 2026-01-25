@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   # Web authentication (session-based)
   resource :session
+  post "session/dev_login", to: "sessions#dev_login", as: :dev_login if Rails.env.development?
   resource :registration, only: [:new, :create]
   resources :passwords, param: :token
 

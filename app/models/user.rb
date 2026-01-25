@@ -1,10 +1,14 @@
 class User < ApplicationRecord
+  FREE_SIGNUP_CREDITS = 5
+
   has_secure_password validations: false  # We handle password validation manually
   has_many :sessions, dependent: :destroy
   has_many :api_tokens, dependent: :destroy
   has_many :page_credits, dependent: :destroy
   has_many :transcription_jobs, dependent: :destroy
   has_many :journal_entries, dependent: :destroy
+
+  after_create :grant_signup_credits
 
   normalizes :email_address, with: ->(e) { e.strip.downcase }
 
@@ -33,6 +37,10 @@ class User < ApplicationRecord
   end
 
   private
+
+  def grant_signup_credits
+    add_credits!(FREE_SIGNUP_CREDITS, type: "signup_bonus")
+  end
 
   def password_required?
     !oauth_user? && (new_record? || password.present?)

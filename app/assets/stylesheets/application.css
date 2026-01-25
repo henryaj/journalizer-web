@@ -132,6 +132,7 @@ a:hover {
 /* Flash Messages */
 .flash {
   padding: 1rem 1.5rem;
+  margin-top: 1rem;
   margin-bottom: 1rem;
   border-radius: var(--radius);
   font-weight: 500;

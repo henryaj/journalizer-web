@@ -4,7 +4,8 @@ export default class extends Controller {
   static targets = [
     "video", "canvas", "loading", "error", "errorMessage", "controls",
     "strip", "stripInner", "count", "shutter", "flipBtn", "doneBtn",
-    "form", "filesContainer", "orientationInput", "orientationBtn", "orientationLabel"
+    "form", "filesContainer", "orientationInput", "orientationBtn", "orientationLabel",
+    "flash"
   ]
 
   connect() {
@@ -101,10 +102,11 @@ export default class extends Controller {
 
       self.captures.push({ file: file, dataUrl: canvas.toDataURL("image/jpeg", 0.9) })
       self.updateUI()
-
-      self.shutterTarget.classList.add("flash")
-      setTimeout(function() { self.shutterTarget.classList.remove("flash") }, 150)
     }, "image/jpeg", 0.9)
+
+    // Trigger flash effect
+    this.flashTarget.classList.add("flash")
+    setTimeout(function() { self.flashTarget.classList.remove("flash") }, 150)
   }
 
   removeCapture(event) {

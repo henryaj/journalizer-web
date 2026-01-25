@@ -1182,6 +1182,24 @@ tr:hover td {
   border: 2px solid var(--color-gray-300);
 }
 
+.camera-flash {
+  position: fixed;
+  inset: 0;
+  background: white;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+.camera-flash.flash {
+  animation: camera-flash 0.15s ease-out;
+}
+
+@keyframes camera-flash {
+  0% { opacity: 0.9; }
+  100% { opacity: 0; }
+}
+
 .camera-done {
   min-width: 80px;
 }

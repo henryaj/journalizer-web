@@ -1,5 +1,5 @@
 class ClaudePostProcessor
-  PROMPT = <<~PROMPT.freeze
+  BASE_PROMPT = <<~PROMPT.freeze
     You are processing OCR output from handwritten journal pages.
 
     The raw text may contain:
@@ -13,7 +13,7 @@ class ClaudePostProcessor
     2. Look for dates in any format (e.g., "Thursday, December 25", "Dec 28", "25/12/24")
     3. If there are multiple dated entries, split them
     4. Track which page(s) each entry spans (0-indexed)
-    5. Convert dates to ISO format (YYYY-MM-DD). Infer the year from context (assume recent past if ambiguous).
+    5. Convert dates to ISO format (YYYY-MM-DD).%{year_instruction}
     6. Generate a brief title (3-8 words) summarizing the entry's main theme or topic
 
     Output JSON:
@@ -35,15 +35,23 @@ class ClaudePostProcessor
     @api_key = api_key || ENV.fetch("ANTHROPIC_API_KEY")
   end
 
-  def process(raw_text, page_count:)
+  def process(raw_text, page_count:, year_hint: nil)
     client = Anthropic::Client.new(api_key: @api_key)
+
+    year_instruction = if year_hint.present?
+      " Use #{year_hint} as the year for all dates (the user specified these entries are from #{year_hint})."
+    else
+      " Infer the year from context (assume recent past if ambiguous)."
+    end
+
+    prompt = BASE_PROMPT % { year_instruction: year_instruction }
 
     response = client.messages.create(
       model: "claude-haiku-4-5-20251001",
       max_tokens: 4096,
       messages: [{
         role: "user",
-        content: "#{PROMPT}\n\nRaw OCR text:\n#{raw_text}"
+        content: "#{prompt}\n\nRaw OCR text:\n#{raw_text}"
       }]
     )
 

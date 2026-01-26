@@ -7,6 +7,7 @@ class UploadsController < ApplicationController
   def create
     images = params[:images]
     orientation = params[:orientation] || "0"
+    year_hint = params[:year].presence&.to_i
 
     if images.blank?
       redirect_to new_upload_path, alert: "Please select at least one image."
@@ -19,7 +20,8 @@ class UploadsController < ApplicationController
     # Create transcription job with appropriate status
     job = Current.user.transcription_jobs.create!(
       status: has_enough_credits ? :pending : :awaiting_credits,
-      page_count: page_count
+      page_count: page_count,
+      year_hint: year_hint
     )
 
     # Create job pages with attached images

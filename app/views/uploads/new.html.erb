@@ -45,6 +45,16 @@
           </div>
         </div>
 
+        <div class="year-toolbar">
+          <label class="year-label" for="year">Year these entries are from:</label>
+          <select name="year" id="year" class="year-select">
+            <option value="">Auto-detect</option>
+            <% (Date.current.year).downto(Date.current.year - 20).each do |y| %>
+              <option value="<%= y %>"><%= y %></option>
+            <% end %>
+          </select>
+        </div>
+
         <button type="button" class="btn btn-secondary btn-small add-more-btn" data-action="click->upload#addMore">
           + Add more pages
         </button>

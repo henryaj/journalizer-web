@@ -15,7 +15,8 @@ module Api
 
         job = current_user.transcription_jobs.create!(
           page_count: page_count,
-          status: :pending
+          status: :pending,
+          year_hint: params[:year].presence&.to_i
         )
 
         # Decode and attach images

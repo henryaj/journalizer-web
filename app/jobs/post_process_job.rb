@@ -20,7 +20,7 @@ class PostProcessJob < ApplicationJob
 
     # Process with Claude Haiku
     processor = ClaudePostProcessor.new
-    entries_data = processor.process(raw_texts, page_count: job.page_count)
+    entries_data = processor.process(raw_texts, page_count: job.page_count, year_hint: job.year_hint)
 
     # Create journal entries
     entries_data.each do |entry_data|

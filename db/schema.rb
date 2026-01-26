@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_25_135241) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_26_092950) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -127,6 +127,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_25_135241) do
     t.string "status", default: "pending", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.integer "year_hint"
     t.index ["expires_at"], name: "index_transcription_jobs_on_expires_at"
     t.index ["status", "created_at"], name: "index_transcription_jobs_on_status_and_created_at"
     t.index ["user_id", "status"], name: "index_transcription_jobs_on_user_id_and_status"

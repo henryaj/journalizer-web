@@ -76,7 +76,11 @@
         <span class="credit-cost" data-upload-target="costDisplay">Select images to see cost</span>
       </div>
 
-      <%= f.submit "Continue to Review", class: "btn btn-primary btn-large btn-full", data: { upload_target: "submit" }, disabled: true %>
+      <%= f.submit "Continue to Review", class: "btn btn-primary btn-large btn-full", data: { upload_target: "submit", action: "click->upload#showLoading" }, disabled: true %>
+      <div class="upload-loading" data-upload-target="loading" style="display: none;">
+        <div class="upload-loading-spinner"></div>
+        <p>Uploading images...</p>
+      </div>
     </div>
   <% end %>
 </div>

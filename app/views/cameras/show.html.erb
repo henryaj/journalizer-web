@@ -54,6 +54,12 @@
     </div>
   </div>
 
+  <!-- Loading overlay -->
+  <div class="camera-uploading" data-camera-target="uploading" style="display: none;">
+    <div class="upload-loading-spinner"></div>
+    <p>Uploading images...</p>
+  </div>
+
   <!-- Hidden form for submission -->
   <%= form_with url: uploads_path, method: :post, multipart: true, id: "camera-form", data: { camera_target: "form" } do |f| %>
     <input type="hidden" name="orientation" data-camera-target="orientationInput" value="0">

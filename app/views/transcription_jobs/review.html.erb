@@ -40,13 +40,18 @@
     <div class="review-grid" data-review-target="grid">
       <% @pages.each do |page| %>
         <div class="review-item <%= "rotated-#{page.orientation}" if page.orientation > 0 %>"
+             data-page-id="<%= page.id %>"
              data-page-number="<%= page.page_number %>"
+             data-orientation="<%= page.orientation %>"
              data-review-target="item"
              draggable="true"
              data-action="dragstart->review#dragStart dragend->review#dragEnd dragover->review#dragOver drop->review#drop">
           <% if page.image.attached? %>
             <%= image_tag page.image.variant(resize_to_limit: [400, 400]), alt: "Page #{page.page_number}" %>
           <% end %>
+          <button type="button" class="review-item-rotate"
+                  data-action="click->review#rotatePage"
+                  data-url="<%= rotate_transcription_job_job_page_path(@job, page) %>">↻</button>
           <div class="review-item-label">Page <%= page.page_number %></div>
           <div class="review-item-group" data-review-target="groupBadge"></div>
         </div>

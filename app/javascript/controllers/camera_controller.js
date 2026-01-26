@@ -5,7 +5,7 @@ export default class extends Controller {
     "video", "canvas", "loading", "error", "errorMessage", "controls",
     "strip", "stripInner", "count", "shutter", "flipBtn", "doneBtn",
     "form", "filesContainer", "orientationInput", "orientationBtn", "orientationLabel",
-    "flash"
+    "flash", "uploading"
   ]
 
   connect() {
@@ -159,6 +159,11 @@ export default class extends Controller {
 
   done() {
     if (this.captures.length === 0) return
+
+    // Show uploading overlay
+    this.uploadingTarget.style.display = "flex"
+    this.controlsTarget.style.display = "none"
+    this.stripTarget.style.display = "none"
 
     const dataTransfer = new DataTransfer()
     for (let i = 0; i < this.captures.length; i++) {

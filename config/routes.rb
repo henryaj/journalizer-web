@@ -24,6 +24,11 @@ Rails.application.routes.draw do
       patch :confirm
       post :process_partial
     end
+    resources :job_pages, only: [] do
+      member do
+        post :rotate
+      end
+    end
   end
   resources :api_tokens, only: [:index, :create, :destroy]
   resources :entries, only: [:destroy] do

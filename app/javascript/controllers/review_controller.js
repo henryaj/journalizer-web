@@ -21,6 +21,44 @@ export default class extends Controller {
     this.updateUI()
   }
 
+  async rotatePage(event) {
+    event.preventDefault()
+    event.stopPropagation()
+
+    const button = event.target
+    const url = button.dataset.url
+    const item = button.closest('[data-review-target="item"]')
+
+    // Disable button during request
+    button.disabled = true
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
+          'Accept': 'application/json'
+        }
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        const newOrientation = data.orientation
+
+        // Update the item's rotation class
+        item.classList.remove('rotated-90', 'rotated-180', 'rotated-270')
+        if (newOrientation > 0) {
+          item.classList.add(`rotated-${newOrientation}`)
+        }
+        item.dataset.orientation = newOrientation
+      }
+    } catch (error) {
+      console.error('Failed to rotate:', error)
+    } finally {
+      button.disabled = false
+    }
+  }
+
   dragStart(event) {
     event.target.classList.add('dragging')
     event.dataTransfer.setData('text/plain', event.target.dataset.pageNumber)

@@ -1,11 +1,16 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["input", "placeholder", "previewContainer", "previewGrid", "costDisplay", "submit", "dropzone"]
+  static targets = ["input", "placeholder", "previewContainer", "previewGrid", "costDisplay", "submit", "dropzone", "loading"]
 
   connect() {
     this.files = new DataTransfer()
     this.currentRotation = 0
+  }
+
+  showLoading() {
+    this.submitTarget.style.display = "none"
+    this.loadingTarget.style.display = "flex"
   }
 
   handleFiles(event) {

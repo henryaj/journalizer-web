@@ -29,6 +29,9 @@ module Api
         if count.to_i > 60  # 60 requests per minute
           render json: { error: "Rate limit exceeded" }, status: :too_many_requests
         end
+      rescue => e
+        # Cache not available, skip rate limiting
+        Rails.logger.warn "Rate limit check failed: #{e.message}"
       end
 
       def render_error(message, status: :bad_request)

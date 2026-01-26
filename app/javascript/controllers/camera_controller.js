@@ -100,17 +100,20 @@ export default class extends Controller {
       canvas.height = video.videoHeight
     }
 
-    // Apply rotation transform
+    // Apply counter-rotation to correct for phone orientation
+    // If phone is rotated X degrees, we rotate image -X degrees to straighten it
     ctx.save()
     if (rotation === 90) {
-      ctx.translate(canvas.width, 0)
-      ctx.rotate(Math.PI / 2)
+      // Phone rotated 90° CW, counter-rotate 90° CCW
+      ctx.translate(0, canvas.height)
+      ctx.rotate(-Math.PI / 2)
     } else if (rotation === 180) {
       ctx.translate(canvas.width, canvas.height)
       ctx.rotate(Math.PI)
     } else if (rotation === 270) {
-      ctx.translate(0, canvas.height)
-      ctx.rotate(-Math.PI / 2)
+      // Phone rotated 270° CW (90° CCW), counter-rotate 90° CW
+      ctx.translate(canvas.width, 0)
+      ctx.rotate(Math.PI / 2)
     }
     ctx.drawImage(video, 0, 0)
     ctx.restore()

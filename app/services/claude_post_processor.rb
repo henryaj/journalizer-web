@@ -103,29 +103,33 @@ class ClaudePostProcessor
   private
 
   def parse_tool_response(response, page_count:)
-    tool_use = response.content.find { |block| block.type == "tool_use" }
+    # SDK returns :tool_use symbol, not "tool_use" string
+    tool_use = response.content.find { |block| block.type.to_s == "tool_use" }
 
     unless tool_use
-      Rails.logger.error "ClaudePostProcessor: No tool_use in response"
+      Rails.logger.error "ClaudePostProcessor: No tool_use in response. Content types: #{response.content.map(&:type)}"
       return fallback_entry(page_count)
     end
 
-    entries = tool_use.input["entries"]
+    # SDK returns hash with symbol keys
+    entries = tool_use.input[:entries] || tool_use.input["entries"]
     unless entries.is_a?(Array) && entries.any?
-      Rails.logger.error "ClaudePostProcessor: Invalid entries in tool response"
+      Rails.logger.error "ClaudePostProcessor: Invalid entries in tool response: #{tool_use.input.inspect}"
       return fallback_entry(page_count)
     end
 
     entries.map do |entry|
+      # Handle both symbol and string keys
       {
-        title: entry["title"] || "Journal Entry",
-        text: entry["text"],
-        date: parse_date(entry["date"]),
-        image_indices: entry["image_indices"] || []
+        title: (entry[:title] || entry["title"]) || "Journal Entry",
+        text: entry[:text] || entry["text"],
+        date: parse_date(entry[:date] || entry["date"]),
+        image_indices: entry[:image_indices] || entry["image_indices"] || []
       }
     end
   rescue => e
     Rails.logger.error "ClaudePostProcessor: Error parsing tool response: #{e.message}"
+    Rails.logger.error e.backtrace.first(5).join("\n")
     fallback_entry(page_count)
   end
 

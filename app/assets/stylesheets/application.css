@@ -1792,6 +1792,10 @@ tr:hover td {
   z-index: 1000;
 }
 
+.camera-page #feedback_widget {
+  display: none;
+}
+
 .feedback-button {
   width: 48px;
   height: 48px;

@@ -1625,6 +1625,24 @@ tr:hover td {
   object-fit: cover;
 }
 
+.review-item.rotated-90 img,
+.review-item.rotated-270 img {
+  object-fit: contain;
+  transform-origin: center center;
+}
+
+.review-item.rotated-90 img {
+  transform: rotate(90deg) scale(0.75);
+}
+
+.review-item.rotated-180 img {
+  transform: rotate(180deg);
+}
+
+.review-item.rotated-270 img {
+  transform: rotate(270deg) scale(0.75);
+}
+
 .review-item-label {
   position: absolute;
   bottom: 0;

@@ -39,7 +39,7 @@
 
     <div class="review-grid" data-review-target="grid">
       <% @pages.each do |page| %>
-        <div class="review-item"
+        <div class="review-item <%= "rotated-#{page.orientation}" if page.orientation > 0 %>"
              data-page-number="<%= page.page_number %>"
              data-review-target="item"
              draggable="true"

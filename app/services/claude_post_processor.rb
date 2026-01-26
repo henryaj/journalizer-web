@@ -1,4 +1,32 @@
 class ClaudePostProcessor
+  ENTRY_TOOL = {
+    name: "submit_entries",
+    description: "Submit the processed journal entries",
+    input_schema: {
+      type: "object",
+      properties: {
+        entries: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              title: { type: "string", description: "Brief title (3-8 words) summarizing the entry" },
+              text: { type: "string", description: "The cleaned journal entry text" },
+              date: { type: ["string", "null"], description: "Date in YYYY-MM-DD format, or null if not found" },
+              image_indices: {
+                type: "array",
+                items: { type: "integer" },
+                description: "0-indexed page numbers this entry spans"
+              }
+            },
+            required: ["title", "text", "date", "image_indices"]
+          }
+        }
+      },
+      required: ["entries"]
+    }
+  }.freeze
+
   BASE_PROMPT = <<~PROMPT.freeze
     You are processing OCR output from handwritten journal pages.
 
@@ -16,19 +44,7 @@ class ClaudePostProcessor
     5. Convert dates to ISO format (YYYY-MM-DD).%{year_instruction}
     6. Generate a brief title (3-8 words) summarizing the entry's main theme or topic
 
-    Output JSON:
-    {
-      "entries": [
-        {
-          "title": "Brief summary of the entry",
-          "text": "The cleaned text...",
-          "date": "2024-12-25" or null if no date found,
-          "image_indices": [0] or [0, 1]
-        }
-      ]
-    }
-
-    Only output JSON, no other text.
+    Use the submit_entries tool to return the processed entries.
   PROMPT
 
   SINGLE_ENTRY_PROMPT = <<~PROMPT.freeze
@@ -45,20 +61,9 @@ class ClaudePostProcessor
     3. Combine ALL text into ONE entry (do NOT split even if multiple dates are found)
     4. Convert the first/main date to ISO format (YYYY-MM-DD).%{year_instruction}
     5. Generate a brief title (3-8 words) summarizing the entry's main theme or topic
+    6. Set image_indices to %{image_indices}
 
-    Output JSON:
-    {
-      "entries": [
-        {
-          "title": "Brief summary of the entry",
-          "text": "The cleaned, combined text...",
-          "date": "2024-12-25" or null if no date found,
-          "image_indices": %{image_indices}
-        }
-      ]
-    }
-
-    Only output JSON, no other text.
+    Use the submit_entries tool to return the processed entry.
   PROMPT
 
   def initialize(api_key: nil)
@@ -83,37 +88,35 @@ class ClaudePostProcessor
 
     response = client.messages.create(
       model: "claude-haiku-4-5-20251001",
-      max_tokens: 4096,
+      max_tokens: 16384,
+      tools: [ENTRY_TOOL],
+      tool_choice: { type: "tool", name: "submit_entries" },
       messages: [{
         role: "user",
         content: "#{prompt}\n\nRaw OCR text:\n#{raw_text}"
       }]
     )
 
-    parse_response(response.content.first.text, page_count: page_count)
+    parse_tool_response(response, page_count: page_count)
   end
 
   private
 
-  def parse_response(text, page_count:)
-    # Strip markdown code fences if present
-    cleaned_text = text.gsub(/```json\s*/i, "").gsub(/```\s*$/, "")
+  def parse_tool_response(response, page_count:)
+    tool_use = response.content.find { |block| block.type == "tool_use" }
 
-    # Try to extract JSON from response
-    json_match = cleaned_text.match(/\{[\s\S]*\}/)
-    unless json_match
-      Rails.logger.warn "ClaudePostProcessor: No JSON found in response"
-      return [{
-        title: "Journal Entry",
-        text: text.strip,
-        date: nil,
-        image_indices: (0...page_count).to_a
-      }]
+    unless tool_use
+      Rails.logger.error "ClaudePostProcessor: No tool_use in response"
+      return fallback_entry(page_count)
     end
 
-    data = JSON.parse(json_match[0])
+    entries = tool_use.input["entries"]
+    unless entries.is_a?(Array) && entries.any?
+      Rails.logger.error "ClaudePostProcessor: Invalid entries in tool response"
+      return fallback_entry(page_count)
+    end
 
-    data["entries"].map do |entry|
+    entries.map do |entry|
       {
         title: entry["title"] || "Journal Entry",
         text: entry["text"],
@@ -121,12 +124,15 @@ class ClaudePostProcessor
         image_indices: entry["image_indices"] || []
       }
     end
-  rescue JSON::ParserError => e
-    Rails.logger.error "ClaudePostProcessor: JSON parse error: #{e.message}"
-    Rails.logger.error "ClaudePostProcessor: Response text (first 500 chars): #{text[0..500]}"
+  rescue => e
+    Rails.logger.error "ClaudePostProcessor: Error parsing tool response: #{e.message}"
+    fallback_entry(page_count)
+  end
+
+  def fallback_entry(page_count)
     [{
       title: "Journal Entry",
-      text: text.strip,
+      text: "Error processing entry",
       date: nil,
       image_indices: (0...page_count).to_a
     }]

@@ -36,6 +36,24 @@
   --radius-lg: 0.75rem;
 }
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-primary: #818cf8;
+    --color-primary-dark: #6366f1;
+    --color-primary-light: #a5b4fc;
+    --color-gray-50: #18181b;
+    --color-gray-100: #27272a;
+    --color-gray-200: #3f3f46;
+    --color-gray-300: #52525b;
+    --color-gray-400: #71717a;
+    --color-gray-500: #a1a1aa;
+    --color-gray-600: #d4d4d8;
+    --color-gray-700: #e4e4e7;
+    --color-gray-800: #f4f4f5;
+    --color-gray-900: #fafafa;
+  }
+}
+
 body {
   font-family: var(--font-sans);
   line-height: 1.6;

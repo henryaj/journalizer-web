@@ -80,7 +80,7 @@ export default class extends Controller {
     this.currentOrientation = orientations[(currentIndex + 1) % 4]
 
     this.orientationLabelTarget.textContent = this.currentOrientation + "°"
-    this.orientationInputTarget.value = this.currentOrientation
+    // Don't update orientationInput - rotation is now baked into captured images
 
     this.orientationBtnTarget.style.transform = "rotate(" + this.currentOrientation + "deg)"
   }
@@ -88,12 +88,32 @@ export default class extends Controller {
   capture() {
     const video = this.videoTarget
     const canvas = this.canvasTarget
-
-    canvas.width = video.videoWidth
-    canvas.height = video.videoHeight
-
     const ctx = canvas.getContext("2d")
+    const rotation = this.currentOrientation
+
+    // For 90/270 rotations, swap width/height
+    if (rotation === 90 || rotation === 270) {
+      canvas.width = video.videoHeight
+      canvas.height = video.videoWidth
+    } else {
+      canvas.width = video.videoWidth
+      canvas.height = video.videoHeight
+    }
+
+    // Apply rotation transform
+    ctx.save()
+    if (rotation === 90) {
+      ctx.translate(canvas.width, 0)
+      ctx.rotate(Math.PI / 2)
+    } else if (rotation === 180) {
+      ctx.translate(canvas.width, canvas.height)
+      ctx.rotate(Math.PI)
+    } else if (rotation === 270) {
+      ctx.translate(0, canvas.height)
+      ctx.rotate(-Math.PI / 2)
+    }
     ctx.drawImage(video, 0, 0)
+    ctx.restore()
 
     const self = this
     canvas.toBlob(function(blob) {

@@ -37,11 +37,45 @@
   </div>
 </div>
 
-<% if @pending_jobs.any? %>
+<% awaiting_jobs = @pending_jobs.select(&:awaiting_credits?) %>
+<% processing_jobs = @pending_jobs.reject(&:awaiting_credits?) %>
+
+<% if awaiting_jobs.any? %>
+  <div class="section mt-8">
+    <h2 class="section-title">Awaiting Credits</h2>
+    <div class="alert alert-warning" style="margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between;">
+      <div>
+        You have <strong><%= awaiting_jobs.sum(&:page_count) %> pages</strong> waiting for credits.
+      </div>
+      <%= link_to "Buy credits", new_payment_path, class: "btn btn-primary btn-small" %>
+    </div>
+    <div class="card">
+      <% awaiting_jobs.each do |job| %>
+        <div class="entry-item">
+          <div>
+            <span class="entry-date">Job #<%= job.id %></span>
+            <span class="entry-meta"> - <%= job.page_count %> pages</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <span class="badge badge-warning">Needs <%= job.page_count %> credits</span>
+            <% if @credit_balance > 0 %>
+              <%= button_to "Process #{@credit_balance} now",
+                  process_partial_transcription_job_path(job),
+                  class: "btn btn-secondary btn-small",
+                  data: { turbo_confirm: "This will process only #{@credit_balance} of #{job.page_count} pages. The remaining pages will be skipped. Continue?" } %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+<% if processing_jobs.any? %>
   <div class="section mt-8">
     <h2 class="section-title">Processing</h2>
     <div class="card">
-      <% @pending_jobs.each do |job| %>
+      <% processing_jobs.each do |job| %>
         <div class="entry-item">
           <div>
             <span class="entry-date">Job #<%= job.id %></span>

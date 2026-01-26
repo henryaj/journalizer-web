@@ -4,6 +4,7 @@ class JobPage < ApplicationRecord
 
   enum :status, {
     pending: "pending",
+    skipped: "skipped",
     uploaded: "uploaded",
     ocr_submitted: "ocr_submitted",
     ocr_processing: "ocr_processing",

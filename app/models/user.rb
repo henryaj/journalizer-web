@@ -78,5 +78,17 @@ class User < ApplicationRecord
         stripe_payment_intent_id: stripe_payment_intent_id
       )
     end
+
+    # After transaction commits, resume any held jobs
+    resume_awaiting_jobs!
+  end
+
+  def resume_awaiting_jobs!
+    transcription_jobs.awaiting_credits.order(:created_at).each do |job|
+      break unless has_credits?(job.credits_required)
+
+      deduct_credits!(job.credits_required, job: job)
+      job.resume!
+    end
   end
 end

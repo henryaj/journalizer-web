@@ -1,17 +1,10 @@
 class UploadsController < ApplicationController
   def new
-    if Current.user.credit_balance == 0
-      redirect_to new_payment_path, alert: "You need credits to upload journal pages. Buy some first!"
-      return
-    end
+    # Allow viewing the upload form even with low credits, just warn them
+    @credit_warning = Current.user.credit_balance == 0
   end
 
   def create
-    if Current.user.credit_balance == 0
-      redirect_to new_payment_path, alert: "You need credits to upload journal pages."
-      return
-    end
-
     images = params[:images]
     orientation = params[:orientation] || "0"
 
@@ -20,10 +13,13 @@ class UploadsController < ApplicationController
       return
     end
 
-    # Create transcription job
+    page_count = images.count
+    has_enough_credits = Current.user.has_credits?(page_count)
+
+    # Create transcription job with appropriate status
     job = Current.user.transcription_jobs.create!(
-      status: :pending,
-      page_count: images.count
+      status: has_enough_credits ? :pending : :awaiting_credits,
+      page_count: page_count
     )
 
     # Create job pages with attached images
@@ -36,9 +32,12 @@ class UploadsController < ApplicationController
       page.image.attach(image)
     end
 
-    # Kick off the OCR pipeline
-    OcrPipelineJob.perform_later(job.id)
-
-    redirect_to dashboard_path, notice: "Uploaded #{images.count} page(s). Processing will begin shortly."
+    if has_enough_credits
+      # Kick off the OCR pipeline
+      OcrPipelineJob.perform_later(job.id)
+      redirect_to dashboard_path, notice: "Uploaded #{page_count} page(s). Processing will begin shortly."
+    else
+      redirect_to dashboard_path, alert: "Uploaded #{page_count} page(s) but you only have #{Current.user.credit_balance} credits. Buy more to start processing."
+    end
   end
 end

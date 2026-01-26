@@ -12,6 +12,11 @@ Rails.application.routes.draw do
   # Web dashboard
   resource :camera, only: [:show]
   resources :uploads, only: [:new, :create]
+  resources :transcription_jobs, only: [] do
+    member do
+      post :process_partial
+    end
+  end
   resources :api_tokens, only: [:index, :create, :destroy]
   resources :entries, only: [] do
     member do

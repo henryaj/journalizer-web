@@ -6,6 +6,7 @@ class TranscriptionJob < ApplicationRecord
 
   enum :status, {
     pending: "pending",
+    awaiting_credits: "awaiting_credits",
     uploading: "uploading",
     processing: "processing",
     post_processing: "post_processing",
@@ -15,6 +16,7 @@ class TranscriptionJob < ApplicationRecord
 
   scope :active, -> { where.not(status: [:completed, :failed]) }
   scope :expired, -> { where("expires_at < ?", Time.current) }
+  scope :awaiting_credits, -> { where(status: :awaiting_credits) }
 
   after_create :set_expiration
 
@@ -36,6 +38,44 @@ class TranscriptionJob < ApplicationRecord
 
   def mark_failed!(message)
     update!(status: :failed, error_message: message, completed_at: Time.current)
+  end
+
+  def credits_required
+    page_count
+  end
+
+  def can_resume_with_credits?(available_credits)
+    awaiting_credits? && available_credits >= credits_required
+  end
+
+  def resume!
+    return unless awaiting_credits?
+    update!(status: :pending)
+    OcrPipelineJob.perform_later(id)
+  end
+
+  def process_with_partial_credits!(available_credits)
+    transaction do
+      pages_to_process = [available_credits, page_count].min
+
+      # Mark excess pages as skipped (won't be processed)
+      job_pages.order(:page_number).offset(pages_to_process).update_all(
+        status: :skipped,
+        error_message: "Skipped due to insufficient credits"
+      )
+
+      # Update job with actual page count being processed
+      update!(
+        status: :pending,
+        page_count: pages_to_process
+      )
+
+      # Deduct credits
+      user.deduct_credits!(pages_to_process, job: self)
+    end
+
+    # Start processing
+    OcrPipelineJob.perform_later(id)
   end
 
   def all_pages_complete?

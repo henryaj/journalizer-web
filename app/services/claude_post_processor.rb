@@ -96,9 +96,13 @@ class ClaudePostProcessor
   private
 
   def parse_response(text, page_count:)
+    # Strip markdown code fences if present
+    cleaned_text = text.gsub(/```json\s*/i, "").gsub(/```\s*$/, "")
+
     # Try to extract JSON from response
-    json_match = text.match(/\{[\s\S]*\}/)
+    json_match = cleaned_text.match(/\{[\s\S]*\}/)
     unless json_match
+      Rails.logger.warn "ClaudePostProcessor: No JSON found in response"
       return [{
         title: "Journal Entry",
         text: text.strip,
@@ -117,7 +121,9 @@ class ClaudePostProcessor
         image_indices: entry["image_indices"] || []
       }
     end
-  rescue JSON::ParserError
+  rescue JSON::ParserError => e
+    Rails.logger.error "ClaudePostProcessor: JSON parse error: #{e.message}"
+    Rails.logger.error "ClaudePostProcessor: Response text (first 500 chars): #{text[0..500]}"
     [{
       title: "Journal Entry",
       text: text.strip,

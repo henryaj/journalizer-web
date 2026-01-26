@@ -12,6 +12,9 @@ Rails.application.routes.draw do
   # Feedback
   resource :feedback, only: [:create], controller: "feedback"
 
+  # Stripe webhooks (at root level for Stripe dashboard config)
+  post "stripe/webhooks", to: "api/v1/webhooks#stripe"
+
   # Web dashboard
   resource :camera, only: [:show]
   resources :uploads, only: [:new, :create]

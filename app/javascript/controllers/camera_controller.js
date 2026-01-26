@@ -106,7 +106,7 @@ export default class extends Controller {
 
     // Trigger flash effect
     this.flashTarget.classList.add("flash")
-    setTimeout(function() { self.flashTarget.classList.remove("flash") }, 150)
+    setTimeout(function() { self.flashTarget.classList.remove("flash") }, 300)
   }
 
   removeCapture(event) {

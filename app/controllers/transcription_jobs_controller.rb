@@ -17,6 +17,7 @@ class TranscriptionJobsController < ApplicationController
     # Update review settings
     @job.update!(
       date_parsing_enabled: params[:date_parsing_enabled] != "0",
+      year_hint: params[:year_hint].presence&.to_i,
       reviewed_at: Time.current
     )
 

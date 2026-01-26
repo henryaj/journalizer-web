@@ -21,12 +21,12 @@
       <p class="camera-error-message" data-camera-target="errorMessage"></p>
       <%= link_to "Upload files instead", new_upload_path, class: "btn btn-primary" %>
     </div>
-  </div>
 
-  <!-- Captured Images Strip -->
-  <div class="camera-strip" data-camera-target="strip" style="display: none;">
-    <div class="camera-strip-inner" data-camera-target="stripInner"></div>
-    <div class="camera-strip-count" data-camera-target="count">0 pages</div>
+    <!-- Captured Images Strip (inside preview to overlay) -->
+    <div class="camera-strip" data-camera-target="strip" style="display: none;">
+      <div class="camera-strip-inner" data-camera-target="stripInner"></div>
+      <div class="camera-strip-count" data-camera-target="count">0 pages</div>
+    </div>
   </div>
 
   <!-- Camera Controls -->

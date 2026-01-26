@@ -20,6 +20,19 @@
       </div>
     </div>
 
+    <div class="review-option">
+      <div class="option-text">
+        <strong>Year hint</strong>
+        <span class="option-hint">Helps when entries don't include the year</span>
+      </div>
+      <select name="year_hint" class="year-select-inline">
+        <option value="">Auto-detect</option>
+        <% (Date.current.year).downto(Date.current.year - 20).each do |y| %>
+          <option value="<%= y %>" <%= 'selected' if @job.year_hint == y %>><%= y %></option>
+        <% end %>
+      </select>
+    </div>
+
     <div class="review-instructions" data-review-target="instructions">
       <p>Drag images together to combine them into a single entry, or leave separate.</p>
     </div>

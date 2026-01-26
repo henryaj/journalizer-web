@@ -15,4 +15,10 @@ class EntriesController < ApplicationController
       type: "text/markdown",
       disposition: "attachment"
   end
+
+  def destroy
+    entry = Current.user.journal_entries.find(params[:id])
+    entry.destroy
+    redirect_to dashboard_path, notice: "Entry deleted."
+  end
 end

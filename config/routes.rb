@@ -23,7 +23,7 @@ Rails.application.routes.draw do
     end
   end
   resources :api_tokens, only: [:index, :create, :destroy]
-  resources :entries, only: [] do
+  resources :entries, only: [:destroy] do
     member do
       get :download
     end

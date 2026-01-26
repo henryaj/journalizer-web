@@ -147,6 +147,10 @@
               <%= link_to download_entry_path(entry), class: "btn btn-secondary btn-small", title: "Download as Markdown" do %>
                 &#8595; MD
               <% end %>
+              <%= button_to entry_path(entry), method: :delete, class: "btn btn-ghost btn-small", title: "Delete entry",
+                          data: { turbo_confirm: "Delete this entry? This cannot be undone." } do %>
+                &#128465;
+              <% end %>
             </div>
           </li>
         <% end %>

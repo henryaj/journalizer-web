@@ -45,7 +45,7 @@
              draggable="true"
              data-action="dragstart->review#dragStart dragend->review#dragEnd dragover->review#dragOver drop->review#drop">
           <% if page.image.attached? %>
-            <%= image_tag page.image, alt: "Page #{page.page_number}" %>
+            <%= image_tag page.image.variant(resize_to_limit: [400, 400]), alt: "Page #{page.page_number}" %>
           <% end %>
           <div class="review-item-label">Page <%= page.page_number %></div>
           <div class="review-item-group" data-review-target="groupBadge"></div>

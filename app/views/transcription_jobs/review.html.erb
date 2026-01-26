@@ -1,0 +1,66 @@
+<div class="review-container" data-controller="review">
+  <div class="review-header">
+    <h1 class="review-title">Review Your Upload</h1>
+    <p class="review-subtitle">
+      <%= @pages.count %> page(s) ready for processing
+    </p>
+  </div>
+
+  <%= form_with url: confirm_transcription_job_path(@job), method: :patch, data: { review_target: "form" } do |f| %>
+    <div class="review-option">
+      <label class="toggle-switch">
+        <input type="checkbox" name="date_parsing_enabled" value="1" checked
+               data-review-target="dateParsing"
+               data-action="change->review#toggleDateParsing">
+        <span class="toggle-slider"></span>
+      </label>
+      <div class="option-text">
+        <strong>Auto-detect dates</strong>
+        <span class="option-hint">AI will find dates in your handwriting and split entries accordingly</span>
+      </div>
+    </div>
+
+    <div class="review-instructions" data-review-target="instructions">
+      <p>Drag images together to combine them into a single entry, or leave separate.</p>
+    </div>
+
+    <div class="review-grid" data-review-target="grid">
+      <% @pages.each do |page| %>
+        <div class="review-item"
+             data-page-number="<%= page.page_number %>"
+             data-review-target="item"
+             draggable="true"
+             data-action="dragstart->review#dragStart dragend->review#dragEnd dragover->review#dragOver drop->review#drop">
+          <% if page.image.attached? %>
+            <%= image_tag page.image, alt: "Page #{page.page_number}" %>
+          <% end %>
+          <div class="review-item-label">Page <%= page.page_number %></div>
+          <div class="review-item-group" data-review-target="groupBadge"></div>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="review-groups" data-review-target="groupsContainer">
+      <!-- Groups will be rendered here by JS -->
+    </div>
+
+    <div data-review-target="groupInputs">
+      <!-- Hidden inputs for groups will be populated by JS -->
+    </div>
+
+    <div class="review-actions">
+      <div class="credit-info">
+        <span class="credit-balance"><%= @credit_balance %> credits available</span>
+        <span class="credit-cost"><%= @pages.count %> credit(s) required</span>
+        <% if @credit_balance < @pages.count %>
+          <span class="credit-warning">Not enough credits - buy more or reduce pages</span>
+        <% end %>
+      </div>
+
+      <%= f.submit "Start Processing", class: "btn btn-primary btn-large btn-full" %>
+
+      <%= button_to "Delete Upload", transcription_job_path(@job), method: :delete, class: "btn btn-ghost btn-full mt-4",
+                  data: { turbo_confirm: "Delete this upload? Images will be discarded." } %>
+    </div>
+  <% end %>
+</div>

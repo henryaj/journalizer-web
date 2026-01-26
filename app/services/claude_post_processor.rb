@@ -31,11 +31,41 @@ class ClaudePostProcessor
     Only output JSON, no other text.
   PROMPT
 
+  SINGLE_ENTRY_PROMPT = <<~PROMPT.freeze
+    You are processing OCR output from handwritten journal pages that should be treated as a SINGLE entry.
+
+    The raw text may contain:
+    - Page headers (e.g., "DATUM/DATE", "DATE") - remove these
+    - Page numbers at the bottom - remove these
+    - Page markers like "--- Page 0 ---" - remove these
+
+    Instructions:
+    1. Remove any page headers, page numbers, and page markers
+    2. Look for a date in any format (e.g., "Thursday, December 25", "Dec 28", "25/12/24")
+    3. Combine ALL text into ONE entry (do NOT split even if multiple dates are found)
+    4. Convert the first/main date to ISO format (YYYY-MM-DD).%{year_instruction}
+    5. Generate a brief title (3-8 words) summarizing the entry's main theme or topic
+
+    Output JSON:
+    {
+      "entries": [
+        {
+          "title": "Brief summary of the entry",
+          "text": "The cleaned, combined text...",
+          "date": "2024-12-25" or null if no date found,
+          "image_indices": %{image_indices}
+        }
+      ]
+    }
+
+    Only output JSON, no other text.
+  PROMPT
+
   def initialize(api_key: nil)
     @api_key = api_key || ENV.fetch("ANTHROPIC_API_KEY")
   end
 
-  def process(raw_text, page_count:, year_hint: nil)
+  def process(raw_text, page_count:, year_hint: nil, force_single_entry: false)
     client = Anthropic::Client.new(api_key: @api_key)
 
     year_instruction = if year_hint.present?
@@ -44,7 +74,12 @@ class ClaudePostProcessor
       " Infer the year from context (assume recent past if ambiguous)."
     end
 
-    prompt = BASE_PROMPT % { year_instruction: year_instruction }
+    prompt = if force_single_entry
+      image_indices = (0...page_count).to_a.to_s
+      SINGLE_ENTRY_PROMPT % { year_instruction: year_instruction, image_indices: image_indices }
+    else
+      BASE_PROMPT % { year_instruction: year_instruction }
+    end
 
     response = client.messages.create(
       model: "claude-haiku-4-5-20251001",

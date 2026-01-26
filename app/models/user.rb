@@ -36,16 +36,6 @@ class User < ApplicationRecord
     name.presence || email_address.split("@").first
   end
 
-  private
-
-  def grant_signup_credits
-    add_credits!(FREE_SIGNUP_CREDITS, type: "bonus")
-  end
-
-  def password_required?
-    !oauth_user? && (new_record? || password.present?)
-  end
-
   def has_credits?(amount = 1)
     credit_balance >= amount
   end
@@ -90,5 +80,15 @@ class User < ApplicationRecord
       deduct_credits!(job.credits_required, job: job)
       job.resume!
     end
+  end
+
+  private
+
+  def grant_signup_credits
+    add_credits!(FREE_SIGNUP_CREDITS, type: "bonus")
+  end
+
+  def password_required?
+    !oauth_user? && (new_record? || password.present?)
   end
 end

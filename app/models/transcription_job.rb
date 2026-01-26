@@ -1,10 +1,12 @@
 class TranscriptionJob < ApplicationRecord
   belongs_to :user
   has_many :job_pages, dependent: :destroy
+  has_many :page_groups, dependent: :destroy
   has_many :journal_entries, dependent: :nullify
   has_many :page_credits
 
   enum :status, {
+    awaiting_review: "awaiting_review",
     pending: "pending",
     awaiting_credits: "awaiting_credits",
     uploading: "uploading",
@@ -12,13 +14,19 @@ class TranscriptionJob < ApplicationRecord
     post_processing: "post_processing",
     completed: "completed",
     failed: "failed"
-  }, default: :pending
+  }, default: :awaiting_review
 
   scope :active, -> { where.not(status: [:completed, :failed]) }
+  scope :in_progress, -> { where.not(status: [:completed, :failed, :awaiting_review]) }
   scope :expired, -> { where("expires_at < ?", Time.current) }
   scope :awaiting_credits, -> { where(status: :awaiting_credits) }
+  scope :awaiting_review, -> { where(status: :awaiting_review) }
 
   after_create :set_expiration
+
+  def mark_reviewed!
+    update!(reviewed_at: Time.current, status: :pending)
+  end
 
   def mark_started!
     update!(status: :uploading, started_at: Time.current)
@@ -79,11 +87,19 @@ class TranscriptionJob < ApplicationRecord
   end
 
   def all_pages_complete?
-    job_pages.where.not(status: [:ocr_complete, :failed]).empty?
+    job_pages.where.not(status: [:ocr_complete, :failed, :skipped]).empty?
   end
 
   def completed_pages
     job_pages.where(status: :ocr_complete)
+  end
+
+  def has_manual_groups?
+    page_groups.any?
+  end
+
+  def ungrouped_pages
+    job_pages.where(page_group_id: nil)
   end
 
   private

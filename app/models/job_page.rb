@@ -1,5 +1,6 @@
 class JobPage < ApplicationRecord
   belongs_to :transcription_job
+  belongs_to :page_group, optional: true
   has_one_attached :image
 
   enum :status, {

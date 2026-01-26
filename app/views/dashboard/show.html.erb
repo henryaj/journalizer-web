@@ -41,8 +41,30 @@
   </div>
 </div>
 
+<% review_jobs = @pending_jobs.select(&:awaiting_review?) %>
 <% awaiting_jobs = @pending_jobs.select(&:awaiting_credits?) %>
-<% processing_jobs = @pending_jobs.reject(&:awaiting_credits?) %>
+<% processing_jobs = @pending_jobs.reject { |j| j.awaiting_credits? || j.awaiting_review? } %>
+
+<% if review_jobs.any? %>
+  <div class="section mt-8">
+    <h2 class="section-title">Awaiting Review</h2>
+    <div class="card">
+      <% review_jobs.each do |job| %>
+        <div class="entry-item">
+          <div>
+            <span class="entry-date">Job #<%= job.id %></span>
+            <span class="entry-meta"> - <%= job.page_count %> pages</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <span class="badge badge-warning">Action required</span>
+            <%= link_to "Continue", review_transcription_job_path(job), class: "btn btn-primary btn-small" %>
+            <%= button_to "Delete", transcription_job_path(job), method: :delete, class: "btn btn-ghost btn-small", data: { turbo_confirm: "Delete this upload?" } %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>
 
 <% if awaiting_jobs.any? %>
   <div class="section mt-8">
@@ -134,7 +156,7 @@
         <div class="empty-state-icon">&#128221;</div>
         <div class="empty-state-title">No journal entries yet</div>
         <p>Capture photos of your handwritten journals to get started.</p>
-        <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+        <div style="display: flex; gap: 0.5rem; margin-top: 1rem; justify-content: center;">
           <%= link_to "Capture your first page", camera_path, class: "btn btn-primary" %>
           <%= link_to "Upload images", new_upload_path, class: "btn btn-secondary" %>
         </div>

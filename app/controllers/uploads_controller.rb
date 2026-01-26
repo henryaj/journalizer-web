@@ -15,11 +15,10 @@ class UploadsController < ApplicationController
     end
 
     page_count = images.count
-    has_enough_credits = Current.user.has_credits?(page_count)
 
-    # Create transcription job with appropriate status
+    # Create transcription job in awaiting_review status
     job = Current.user.transcription_jobs.create!(
-      status: has_enough_credits ? :pending : :awaiting_credits,
+      status: :awaiting_review,
       page_count: page_count,
       year_hint: year_hint
     )
@@ -34,12 +33,7 @@ class UploadsController < ApplicationController
       page.image.attach(image)
     end
 
-    if has_enough_credits
-      # Kick off the OCR pipeline
-      OcrPipelineJob.perform_later(job.id)
-      redirect_to dashboard_path, notice: "Uploaded #{page_count} page(s). Processing will begin shortly."
-    else
-      redirect_to dashboard_path, alert: "Uploaded #{page_count} page(s) but you only have #{Current.user.credit_balance} credits. Buy more to start processing."
-    end
+    # Redirect to review page where user can configure groupings and date parsing
+    redirect_to review_transcription_job_path(job)
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_26_092950) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_26_121932) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -62,12 +62,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_26_092950) do
     t.text "error_message"
     t.string "handwriting_ocr_doc_id"
     t.integer "orientation"
+    t.bigint "page_group_id"
     t.integer "page_number", null: false
     t.text "raw_ocr_text"
     t.string "status", default: "pending", null: false
     t.bigint "transcription_job_id", null: false
     t.datetime "updated_at", null: false
     t.index ["handwriting_ocr_doc_id"], name: "index_job_pages_on_handwriting_ocr_doc_id"
+    t.index ["page_group_id"], name: "index_job_pages_on_page_group_id"
     t.index ["transcription_job_id", "page_number"], name: "index_job_pages_on_transcription_job_id_and_page_number", unique: true
     t.index ["transcription_job_id"], name: "index_job_pages_on_transcription_job_id"
   end
@@ -107,6 +109,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_26_092950) do
     t.index ["user_id"], name: "index_page_credits_on_user_id"
   end
 
+  create_table "page_groups", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "group_number", null: false
+    t.bigint "transcription_job_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["transcription_job_id", "group_number"], name: "index_page_groups_on_transcription_job_id_and_group_number", unique: true
+    t.index ["transcription_job_id"], name: "index_page_groups_on_transcription_job_id"
+  end
+
   create_table "sessions", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "ip_address"
@@ -120,9 +131,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_26_092950) do
     t.datetime "completed_at"
     t.datetime "created_at", null: false
     t.integer "credits_charged", default: 0
+    t.boolean "date_parsing_enabled", default: true, null: false
     t.text "error_message"
     t.datetime "expires_at"
     t.integer "page_count", default: 0, null: false
+    t.datetime "reviewed_at"
     t.datetime "started_at"
     t.string "status", default: "pending", null: false
     t.datetime "updated_at", null: false
@@ -153,11 +166,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_26_092950) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "api_tokens", "users"
+  add_foreign_key "job_pages", "page_groups"
   add_foreign_key "job_pages", "transcription_jobs"
   add_foreign_key "journal_entries", "transcription_jobs"
   add_foreign_key "journal_entries", "users"
   add_foreign_key "page_credits", "transcription_jobs"
   add_foreign_key "page_credits", "users"
+  add_foreign_key "page_groups", "transcription_jobs"
   add_foreign_key "sessions", "users"
   add_foreign_key "transcription_jobs", "users"
 end

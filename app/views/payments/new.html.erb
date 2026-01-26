@@ -21,7 +21,7 @@
           <br><span style="color: var(--color-success);">Save 20%</span>
         <% end %>
       </div>
-      <%= button_to "Buy #{package[:pages]} credits", payments_path(package: key), class: "btn btn-primary btn-full" %>
+      <%= button_to "Buy #{package[:pages]} credits", payments_path(package: key), class: "btn btn-primary btn-full", data: { turbo: false } %>
     </div>
   <% end %>
 </div>

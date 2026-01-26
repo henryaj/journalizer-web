@@ -1826,6 +1826,10 @@ tr:hover td {
     justify-content: flex-end;
   }
 
+  .hide-mobile {
+    display: none;
+  }
+
   .landing-logo-icon {
     width: 40px;
     height: 40px;

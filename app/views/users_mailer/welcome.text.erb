@@ -1,0 +1,15 @@
+Welcome to Journalizer!
+
+Hi<%= @user.display_name.present? ? " #{@user.display_name.split.first}" : "" %>!
+
+Thanks for signing up. Journalizer makes it easy to digitize your handwritten journal entries using AI-powered transcription.
+
+Here's how to get started:
+
+1. Take photos of your journal pages or upload existing images
+2. Review and confirm your upload
+3. Our AI will transcribe your handwriting and organize entries by date
+
+Go to your dashboard: <%= dashboard_url %>
+
+Questions or feedback? Just reply to this email.

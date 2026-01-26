@@ -9,6 +9,7 @@ class User < ApplicationRecord
   has_many :journal_entries, dependent: :destroy
 
   after_create :grant_signup_credits
+  after_create :send_welcome_email
 
   normalizes :email_address, with: ->(e) { e.strip.downcase }
 
@@ -86,6 +87,10 @@ class User < ApplicationRecord
 
   def grant_signup_credits
     add_credits!(FREE_SIGNUP_CREDITS, type: "bonus")
+  end
+
+  def send_welcome_email
+    UsersMailer.welcome(self).deliver_later
   end
 
   def password_required?

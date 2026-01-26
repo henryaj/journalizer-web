@@ -1650,6 +1650,116 @@ tr:hover td {
   font-weight: 500;
 }
 
+/* Feedback Widget */
+#feedback_widget {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 1000;
+}
+
+.feedback-button {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--color-gray-700);
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-lg);
+  transition: all 0.2s;
+}
+
+.feedback-button:hover {
+  background: var(--color-gray-800);
+  transform: scale(1.05);
+}
+
+.feedback-panel {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 320px;
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.feedback-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid var(--color-gray-200);
+}
+
+.feedback-panel-title {
+  font-weight: 600;
+  color: var(--color-gray-900);
+}
+
+.feedback-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--color-gray-500);
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+}
+
+.feedback-close:hover {
+  color: var(--color-gray-700);
+}
+
+.feedback-panel form {
+  padding: 1rem;
+}
+
+.feedback-textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--color-gray-300);
+  border-radius: var(--radius);
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  resize: vertical;
+  margin-bottom: 1rem;
+}
+
+.feedback-textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgb(99 102 241 / 0.1);
+}
+
+.feedback-success {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 1000;
+}
+
+.feedback-success-content {
+  background: var(--color-success);
+  color: white;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  box-shadow: var(--shadow-lg);
+}
+
+.feedback-success-icon {
+  font-size: 1.125rem;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .navbar {

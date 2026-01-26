@@ -1,0 +1,9 @@
+<h1>New Feedback</h1>
+
+<p><strong>From:</strong> <%= @user.display_name %> (<%= mail_to @user.email_address %>)</p>
+
+<div style="background: #f8f8f8; border-left: 4px solid #ddd; padding: 16px 20px; margin: 24px 0; border-radius: 0 4px 4px 0;">
+  <%= simple_format(@message) %>
+</div>
+
+<p class="muted">Reply directly to this email to respond to the user.</p>

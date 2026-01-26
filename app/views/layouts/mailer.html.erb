@@ -2,12 +2,97 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-      /* Email styles need to be inline */
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        background-color: #f5f5f5;
+      }
+      .email-wrapper {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 40px 20px;
+      }
+      .email-content {
+        background: #ffffff;
+        border-radius: 8px;
+        padding: 40px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      }
+      .email-header {
+        text-align: center;
+        margin-bottom: 32px;
+        padding-bottom: 24px;
+        border-bottom: 1px solid #eee;
+      }
+      .email-logo {
+        font-size: 24px;
+        font-weight: 600;
+        color: #1a1a1a;
+        text-decoration: none;
+      }
+      .email-body {
+        color: #444;
+      }
+      .email-body h1 {
+        font-size: 22px;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin: 0 0 16px 0;
+      }
+      .email-body p {
+        margin: 0 0 16px 0;
+        color: #555;
+      }
+      .btn {
+        display: inline-block;
+        padding: 14px 28px;
+        background-color: #1a1a1a;
+        color: #ffffff !important;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: 500;
+        margin: 8px 0 24px 0;
+      }
+      .btn:hover {
+        background-color: #333;
+      }
+      .email-footer {
+        margin-top: 32px;
+        padding-top: 24px;
+        border-top: 1px solid #eee;
+        text-align: center;
+        font-size: 13px;
+        color: #888;
+      }
+      .email-footer a {
+        color: #666;
+        text-decoration: none;
+      }
+      .muted {
+        color: #888;
+        font-size: 14px;
+      }
     </style>
   </head>
 
   <body>
-    <%= yield %>
+    <div class="email-wrapper">
+      <div class="email-content">
+        <div class="email-header">
+          <a href="https://journalizer.app" class="email-logo">Journalizer</a>
+        </div>
+        <div class="email-body">
+          <%= yield %>
+        </div>
+        <div class="email-footer">
+          <p>&copy; <%= Date.current.year %> Journalizer &middot; <a href="https://journalizer.app">journalizer.app</a></p>
+        </div>
+      </div>
+    </div>
   </body>
 </html>

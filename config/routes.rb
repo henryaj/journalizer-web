@@ -9,6 +9,9 @@ Rails.application.routes.draw do
   get "/auth/:provider/callback", to: "omniauth_callbacks#google_oauth2", as: :omniauth_callback
   get "/auth/failure", to: "omniauth_callbacks#failure"
 
+  # Feedback
+  resource :feedback, only: [:create], controller: "feedback"
+
   # Web dashboard
   resource :camera, only: [:show]
   resources :uploads, only: [:new, :create]

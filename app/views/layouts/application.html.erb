@@ -63,5 +63,26 @@
         <p>Journalizer is <a href="https://github.com/henryaj/journalizer-web" target="_blank">open source</a>. Your data is yours.</p>
       </footer>
     <% end %>
+
+    <% if authenticated? %>
+      <div id="feedback_widget" data-controller="feedback-widget">
+        <button type="button" class="feedback-button" data-feedback-widget-target="button" data-action="click->feedback-widget#toggle" title="Send feedback">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+        </button>
+
+        <div class="feedback-panel" data-feedback-widget-target="panel" style="display: none;">
+          <div class="feedback-panel-header">
+            <span class="feedback-panel-title">Send Feedback</span>
+            <button type="button" class="feedback-close" data-action="click->feedback-widget#close">&times;</button>
+          </div>
+          <%= form_with url: feedback_path, method: :post, data: { turbo_frame: "_top" } do |f| %>
+            <textarea name="message" rows="4" placeholder="Bug report, feature request, or just say hi..." data-feedback-widget-target="textarea" class="feedback-textarea"></textarea>
+            <button type="submit" class="btn btn-primary btn-full">Send</button>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
   </body>
 </html>

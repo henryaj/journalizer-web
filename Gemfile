@@ -26,6 +26,9 @@ gem "omniauth-rails_csrf_protection"
 # Stripe for payments
 gem "stripe"
 
+# Postmark for transactional email
+gem "postmark-rails"
+
 # HTTP client for external APIs
 gem "faraday"
 gem "faraday-multipart"

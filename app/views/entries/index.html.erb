@@ -54,6 +54,11 @@
           </li>
         <% end %>
       </ul>
+      <% if @pagy.pages > 1 %>
+        <div class="pagination-wrapper">
+          <%== pagy_nav(@pagy) %>
+        </div>
+      <% end %>
     <% else %>
       <div class="empty-state">
         <div class="empty-state-icon">&#128221;</div>

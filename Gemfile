@@ -42,6 +42,9 @@ gem "aws-sdk-s3", require: false
 # ZIP file creation for exports
 gem "rubyzip"
 
+# Pagination
+gem "pagy", "~> 9.0"
+
 # CORS for API access from Obsidian plugin
 gem "rack-cors"
 

@@ -58,11 +58,9 @@
       <%= yield %>
     </main>
 
-    <% unless authenticated? %>
-      <footer class="footer">
-        <p>Journalizer is <a href="https://github.com/henryaj/journalizer-web" target="_blank">open source</a>. Your data is yours.</p>
-      </footer>
-    <% end %>
+    <footer class="footer">
+      <p>a <a href="https://blmc.dev" target="_blank">Bloom Computing</a> production</p>
+    </footer>
 
     <% if authenticated? %>
       <div id="feedback_widget" data-controller="feedback-widget">

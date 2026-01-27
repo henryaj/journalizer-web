@@ -1,0 +1,99 @@
+<div class="page-header">
+  <h1 class="page-title">Account & Billing</h1>
+  <p class="page-subtitle">Manage your account and view transaction history</p>
+</div>
+
+<div class="account-grid">
+  <div class="card">
+    <h3 class="card-title">Account Details</h3>
+    <div class="account-info">
+      <div class="account-row">
+        <span class="account-label">Email</span>
+        <span class="account-value"><%= Current.user.email_address %></span>
+      </div>
+      <% if Current.user.name.present? %>
+        <div class="account-row">
+          <span class="account-label">Name</span>
+          <span class="account-value"><%= Current.user.name %></span>
+        </div>
+      <% end %>
+      <div class="account-row">
+        <span class="account-label">Account type</span>
+        <span class="account-value"><%= Current.user.oauth_user? ? "Google Sign-In" : "Email & Password" %></span>
+      </div>
+      <div class="account-row">
+        <span class="account-label">Member since</span>
+        <span class="account-value"><%= Current.user.created_at.strftime("%B %d, %Y") %></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 class="card-title">Credit Balance</h3>
+    <div class="credit-summary">
+      <div class="credit-balance-large"><%= Current.user.credit_balance %></div>
+      <div class="credit-balance-label">page credits available</div>
+      <%= link_to "Buy more credits", new_payment_path, class: "btn btn-primary mt-4" %>
+    </div>
+  </div>
+</div>
+
+<div class="card mt-6">
+  <h3 class="card-title">Transaction History</h3>
+
+  <% if @transactions.any? %>
+    <div class="table-container mt-4">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th class="text-right">Amount</th>
+            <th class="text-right">Balance</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @transactions.each do |transaction| %>
+            <tr>
+              <td><%= transaction.created_at.strftime("%b %d, %Y %l:%M %p") %></td>
+              <td>
+                <span class="transaction-badge transaction-<%= transaction.transaction_type %>">
+                  <%= transaction.transaction_type.capitalize %>
+                </span>
+              </td>
+              <td>
+                <% case transaction.transaction_type %>
+                <% when "purchase" %>
+                  Credit purchase
+                <% when "usage" %>
+                  <% if transaction.transcription_job %>
+                    Transcription job #<%= transaction.transcription_job_id %>
+                  <% else %>
+                    Transcription
+                  <% end %>
+                <% when "bonus" %>
+                  Bonus credits
+                <% when "refund" %>
+                  Refund
+                <% end %>
+              </td>
+              <td class="text-right">
+                <span class="<%= transaction.amount >= 0 ? 'text-success' : 'text-danger' %>">
+                  <%= transaction.amount >= 0 ? '+' : '' %><%= transaction.amount %>
+                </span>
+              </td>
+              <td class="text-right"><%= transaction.balance_after %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <div class="empty-state">
+      <div class="empty-state-icon">&#128203;</div>
+      <div class="empty-state-title">No transactions yet</div>
+      <p>Your credit purchases and usage will appear here.</p>
+    </div>
+  <% end %>
+</div>

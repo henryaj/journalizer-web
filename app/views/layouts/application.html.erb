@@ -35,12 +35,13 @@
           <%= link_to "Upload", new_upload_path, class: "nav-link" %>
           <%= link_to "Buy Credits", new_payment_path, class: "nav-link" %>
           <%= link_to "API Tokens", api_tokens_path, class: "nav-link hide-mobile" %>
+          <%= link_to "Account", account_path, class: "nav-link hide-mobile" %>
         </div>
         <div class="nav-user">
           <% if Current.user.avatar_url.present? %>
             <img src="<%= Current.user.avatar_url %>" alt="" class="avatar">
           <% end %>
-          <span class="credit-badge"><%= Current.user.credit_balance %> credits</span>
+          <%= link_to account_path, class: "credit-badge" do %><%= Current.user.credit_balance %> credits<% end %>
           <%= button_to "Sign out", session_path, method: :delete, class: "btn btn-small btn-ghost" %>
         </div>
       </nav>

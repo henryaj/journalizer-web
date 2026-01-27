@@ -24,4 +24,4 @@ production:
 
   send_weekly_stats:
     class: SendWeeklyStatsJob
-    schedule: at 9am on Sunday
+    schedule: every week on Sunday at 9am

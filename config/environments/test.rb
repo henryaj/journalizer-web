@@ -6,6 +6,15 @@
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
+  # Use fixed encryption keys for testing
+  # Use fixed encryption keys for testing - must match across all test processes
+  config.active_record.encryption.primary_key = "test-primary-key-for-testing-123"
+  config.active_record.encryption.deterministic_key = "test-deterministic-key-testing!"
+  config.active_record.encryption.key_derivation_salt = "test-key-derivation-salt"
+  # Support reading unencrypted fixture data and querying it
+  config.active_record.encryption.support_unencrypted_data = true
+  config.active_record.encryption.extend_queries = true
+
   # While tests run files are not watched, reloading is not necessary.
   config.enable_reloading = false
 

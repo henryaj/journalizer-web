@@ -2181,19 +2181,25 @@ tr:hover td {
   align-items: center;
   gap: 1.25rem;
   padding: 1.5rem 2rem;
-  background: white;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
-  border: 2px solid transparent;
   text-decoration: none;
   transition: all 0.2s;
 }
 
 .dashboard-action-card:hover {
-  border-color: var(--color-primary);
   box-shadow: var(--shadow-lg);
   transform: translateY(-2px);
   text-decoration: none;
+  filter: brightness(1.05);
+}
+
+.dashboard-action-card.action-capture {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+}
+
+.dashboard-action-card.action-upload {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
 }
 
 .dashboard-action-icon {
@@ -2209,12 +2215,12 @@ tr:hover td {
 
 .dashboard-action-text strong {
   font-size: 1.25rem;
-  color: var(--color-gray-900);
+  color: white;
 }
 
 .dashboard-action-text span {
   font-size: 0.875rem;
-  color: var(--color-gray-500);
+  color: rgba(255, 255, 255, 0.85);
 }
 
 /* Responsive */

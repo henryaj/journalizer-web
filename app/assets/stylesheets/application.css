@@ -1742,6 +1742,15 @@ tr:hover td {
   border-color: var(--color-primary);
 }
 
+.review-item.drag-disabled {
+  cursor: default;
+}
+
+.review-item.drag-disabled:hover {
+  border-color: var(--color-gray-200);
+  box-shadow: none;
+}
+
 .review-item img {
   width: 100%;
   height: 100%;

@@ -43,7 +43,11 @@ class JournalEntry < ApplicationRecord
   end
 
   def mark_synced!
-    update!(synced: true)
+    if user.entry_retention == "on_sync"
+      destroy!
+    else
+      update!(synced: true)
+    end
   end
 
   def days_until_expiry
@@ -62,6 +66,14 @@ class JournalEntry < ApplicationRecord
   private
 
   def set_expiration
-    update_column(:expires_at, 30.days.from_now)
+    retention = user.entry_retention
+    days = User::RETENTION_OPTIONS.dig(retention, :days)
+
+    if days
+      update_column(:expires_at, days.days.from_now)
+    else
+      # Never expire (or on_sync - will be deleted when synced)
+      update_column(:expires_at, 100.years.from_now)
+    end
   end
 end

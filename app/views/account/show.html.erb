@@ -5,6 +5,21 @@
 
 <div class="account-grid">
   <div class="card">
+    <h3 class="card-title">Settings</h3>
+    <%= form_with model: Current.user, url: account_path, method: :patch do |f| %>
+      <div class="form-group">
+        <%= f.label :entry_retention, "Entry retention", class: "form-label" %>
+        <%= f.select :entry_retention,
+            User::RETENTION_OPTIONS.map { |k, v| [v[:label], k] },
+            {},
+            class: "form-select" %>
+        <p class="form-hint">How long to keep entries before auto-deleting. "Delete on sync" removes entries immediately after syncing to Obsidian.</p>
+      </div>
+      <%= f.submit "Save settings", class: "btn btn-primary" %>
+    <% end %>
+  </div>
+
+  <div class="card">
     <h3 class="card-title">Account Details</h3>
     <div class="account-info">
       <div class="account-row">

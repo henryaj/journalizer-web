@@ -1,6 +1,13 @@
 class User < ApplicationRecord
   FREE_SIGNUP_CREDITS = 5
 
+  RETENTION_OPTIONS = {
+    "days_30" => { label: "30 days", days: 30 },
+    "days_90" => { label: "90 days", days: 90 },
+    "never" => { label: "Never", days: nil },
+    "on_sync" => { label: "Delete on sync", days: nil }
+  }.freeze
+
   has_secure_password validations: false  # We handle password validation manually
   has_many :sessions, dependent: :destroy
   has_many :api_tokens, dependent: :destroy

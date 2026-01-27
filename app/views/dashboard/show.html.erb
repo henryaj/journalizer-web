@@ -115,20 +115,23 @@
 <% end %>
 
 <div class="section mt-8">
-  <div style="display: flex; justify-content: space-between; align-items: center;">
+  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
     <h2 class="section-title" style="margin-bottom: 0;">Recent Entries</h2>
-    <% if @recent_entries.any? %>
-      <%= link_to export_path, method: :post, class: "btn btn-secondary btn-small" do %>
-        &#128230; Export All (ZIP)
+    <div style="display: flex; gap: 0.5rem; align-items: center;">
+      <% if @recent_entries.any? %>
+        <%= link_to "View All", entries_path, class: "btn btn-secondary btn-small" %>
+        <%= link_to export_path, method: :post, class: "btn btn-secondary btn-small" do %>
+          &#128230; Export All (ZIP)
+        <% end %>
       <% end %>
-    <% end %>
+    </div>
   </div>
   <div class="card" style="margin-top: 1rem;">
     <% if @recent_entries.any? %>
       <ul class="entry-list">
         <% @recent_entries.each do |entry| %>
           <li class="entry-item">
-            <div>
+            <div class="entry-info">
               <span class="entry-date"><%= entry.entry_date&.strftime("%B %d, %Y") || entry.title %></span>
               <span class="entry-meta"> - <%= truncate(entry.content, length: 60) %></span>
             </div>

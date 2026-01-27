@@ -1,0 +1,58 @@
+<div class="dashboard-header" style="display: flex; justify-content: space-between; align-items: center;">
+  <h1 class="dashboard-title">All Entries</h1>
+  <div style="display: flex; gap: 0.5rem;">
+    <%= link_to "Back to Dashboard", dashboard_path, class: "btn btn-secondary" %>
+    <% if @entries.any? %>
+      <%= link_to export_path, method: :post, class: "btn btn-primary" do %>
+        &#128230; Export All (ZIP)
+      <% end %>
+    <% end %>
+  </div>
+</div>
+
+<div class="section mt-8">
+  <div class="card">
+    <% if @entries.any? %>
+      <ul class="entry-list">
+        <% @entries.each do |entry| %>
+          <li class="entry-item">
+            <div class="entry-info">
+              <span class="entry-date"><%= entry.entry_date&.strftime("%B %d, %Y") || entry.title %></span>
+              <span class="entry-meta"> - <%= truncate(entry.content, length: 100) %></span>
+            </div>
+            <div class="entry-actions">
+              <% days = entry.days_until_expiry %>
+              <% if days && days > 0 %>
+                <span class="badge badge-<%= entry.expiry_urgency == :ok ? 'success' : (entry.expiry_urgency == :warning ? 'warning' : 'danger') %>">
+                  Expires in <%= days %> <%= 'day'.pluralize(days) %>
+                </span>
+              <% end %>
+              <% if entry.synced %>
+                <span class="badge badge-success">Synced</span>
+              <% else %>
+                <span class="badge badge-info">Pending sync</span>
+              <% end %>
+              <%= link_to download_entry_path(entry), class: "btn btn-secondary btn-small", title: "Download as Markdown" do %>
+                &#8595; MD
+              <% end %>
+              <%= button_to entry_path(entry), method: :delete, class: "btn btn-ghost btn-small", title: "Delete entry",
+                          data: { turbo_confirm: "Delete this entry? This cannot be undone." } do %>
+                &#128465;
+              <% end %>
+            </div>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <div class="empty-state">
+        <div class="empty-state-icon">&#128221;</div>
+        <div class="empty-state-title">No journal entries yet</div>
+        <p>Capture photos of your handwritten journals to get started.</p>
+        <div style="display: flex; gap: 0.5rem; margin-top: 1rem; justify-content: center;">
+          <%= link_to "Capture your first page", camera_path, class: "btn btn-primary" %>
+          <%= link_to "Upload images", new_upload_path, class: "btn btn-secondary" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

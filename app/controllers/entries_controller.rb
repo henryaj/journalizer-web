@@ -1,6 +1,10 @@
 class EntriesController < ApplicationController
   before_action :require_authentication
 
+  def index
+    @entries = Current.user.journal_entries.not_expired.order(entry_date: :desc, created_at: :desc)
+  end
+
   def download
     entry = Current.user.journal_entries.not_expired.find(params[:id])
 

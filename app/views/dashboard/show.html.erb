@@ -15,25 +15,6 @@
   </div>
 <% end %>
 
-<div class="dashboard-grid">
-  <div class="stat-card">
-    <div class="stat-label">Credit Balance</div>
-    <div class="stat-value"><%= @credit_balance %> <span style="font-size: 1rem; font-weight: normal; color: var(--color-gray-500);">pages</span></div>
-    <div class="stat-action">
-      <%= link_to "Buy more credits", new_payment_path, class: "btn btn-primary btn-small" %>
-    </div>
-  </div>
-
-  <div class="stat-card">
-    <div class="stat-label">Journal Entries</div>
-    <div class="stat-value"><%= @recent_entries.count %></div>
-    <div class="stat-action">
-      <span class="badge badge-info">Last 30 days</span>
-    </div>
-  </div>
-
-</div>
-
 <% review_jobs = @pending_jobs.select(&:awaiting_review?) %>
 <% awaiting_jobs = @pending_jobs.select(&:awaiting_credits?) %>
 <% processing_jobs = @pending_jobs.reject { |j| j.awaiting_credits? || j.awaiting_review? } %>

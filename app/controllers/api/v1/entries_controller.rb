@@ -58,7 +58,7 @@ module Api
       def serialize_entry(entry, include_images: false)
         data = {
           id: entry.id,
-          entry_date: entry.entry_date.iso8601,
+          entry_date: entry.entry_date&.iso8601,
           content: entry.content,
           date_detected: entry.date_detected,
           source: entry.source,

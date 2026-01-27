@@ -12,29 +12,43 @@
     <% if @entries.any? %>
       <ul class="entry-list">
         <% @entries.each do |entry| %>
-          <li class="entry-item">
-            <div>
-              <span class="entry-date"><%= entry.entry_date&.strftime("%B %d, %Y") || entry.title %></span>
-              <span class="entry-meta"> - <%= truncate(entry.content, length: 60) %></span>
+          <li class="entry-item" data-controller="entry" data-action="click->entry#toggle">
+            <div class="entry-header">
+              <div class="entry-header-left">
+                <span class="entry-date"><%= entry.entry_date&.strftime("%B %d, %Y") || entry.title %></span>
+                <span class="entry-meta"> - <%= truncate(entry.content, length: 60) %></span>
+              </div>
+              <div class="entry-actions">
+                <% days = entry.days_until_expiry %>
+                <% if days && days > 0 %>
+                  <span class="badge badge-<%= entry.expiry_urgency == :ok ? 'success' : (entry.expiry_urgency == :warning ? 'warning' : 'danger') %>">
+                    Expires in <%= days %> <%= 'day'.pluralize(days) %>
+                  </span>
+                <% end %>
+                <% if entry.synced %>
+                  <span class="badge badge-success">Synced</span>
+                <% else %>
+                  <span class="badge badge-info">Pending sync</span>
+                <% end %>
+                <%= link_to download_entry_path(entry), class: "btn btn-secondary btn-small", title: "Download as Markdown" do %>
+                  &#8595; MD
+                <% end %>
+                <%= button_to entry_path(entry), method: :delete, class: "btn btn-ghost btn-small", title: "Delete entry",
+                            data: { turbo_confirm: "Delete this entry? This cannot be undone." } do %>
+                  &#128465;
+                <% end %>
+              </div>
             </div>
-            <div class="entry-actions">
-              <% days = entry.days_until_expiry %>
-              <% if days && days > 0 %>
-                <span class="badge badge-<%= entry.expiry_urgency == :ok ? 'success' : (entry.expiry_urgency == :warning ? 'warning' : 'danger') %>">
-                  Expires in <%= days %> <%= 'day'.pluralize(days) %>
-                </span>
-              <% end %>
-              <% if entry.synced %>
-                <span class="badge badge-success">Synced</span>
-              <% else %>
-                <span class="badge badge-info">Pending sync</span>
-              <% end %>
-              <%= link_to download_entry_path(entry), class: "btn btn-secondary btn-small", title: "Download as Markdown" do %>
-                &#8595; MD
-              <% end %>
-              <%= button_to entry_path(entry), method: :delete, class: "btn btn-ghost btn-small", title: "Delete entry",
-                          data: { turbo_confirm: "Delete this entry? This cannot be undone." } do %>
-                &#128465;
+            <div class="entry-expanded" data-entry-target="expanded">
+              <div class="entry-content"><%= entry.content %></div>
+              <% if entry.images.any? %>
+                <div class="entry-thumbnails">
+                  <% entry.images.each do |image| %>
+                    <%= image_tag url_for(image.variant(resize_to_limit: [160, 160])),
+                        class: "entry-thumbnail",
+                        data: { action: "click->entry#openLightbox", full_src: url_for(image) } %>
+                  <% end %>
+                </div>
               <% end %>
             </div>
           </li>

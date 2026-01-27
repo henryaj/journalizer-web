@@ -744,8 +744,8 @@ tr:hover td {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  flex-wrap: nowrap;
-  flex-shrink: 0;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 /* Expandable entries */

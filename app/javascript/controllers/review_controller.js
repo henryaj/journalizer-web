@@ -147,10 +147,33 @@ export default class extends Controller {
     const p = this.instructionsTarget.querySelector('p')
 
     if (dateParsingEnabled) {
-      p.textContent = 'Pages will be automatically split into entries by detected dates. Drag to combine pages that should be processed together.'
+      p.textContent = 'Pages will be automatically split into entries by detected dates.'
+      this.disableDragging()
     } else {
       p.textContent = 'Drag images together to combine them into a single entry, or leave separate.'
+      this.enableDragging()
     }
+  }
+
+  disableDragging() {
+    this.itemTargets.forEach(item => {
+      item.setAttribute('draggable', 'false')
+      item.classList.add('drag-disabled')
+    })
+    // Reset groups to individual pages
+    this.groups = new Map()
+    this.nextGroupId = 0
+    this.itemTargets.forEach(item => {
+      const pageNum = parseInt(item.dataset.pageNumber)
+      this.groups.set(this.nextGroupId++, new Set([pageNum]))
+    })
+  }
+
+  enableDragging() {
+    this.itemTargets.forEach(item => {
+      item.setAttribute('draggable', 'true')
+      item.classList.remove('drag-disabled')
+    })
   }
 
   updateGroupBadges() {
@@ -185,6 +208,13 @@ export default class extends Controller {
   updateGroupsDisplay() {
     const container = this.groupsContainerTarget
     container.innerHTML = ''
+
+    const dateParsingEnabled = this.dateParsingTarget.checked
+
+    if (dateParsingEnabled) {
+      container.innerHTML = ''
+      return
+    }
 
     // Show groups with more than 1 page
     let groupNum = 1

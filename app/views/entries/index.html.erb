@@ -21,8 +21,8 @@
               <div class="entry-actions">
                 <% days = entry.days_until_expiry %>
                 <% if days && days > 0 %>
-                  <span class="badge badge-<%= entry.expiry_urgency == :ok ? 'success' : (entry.expiry_urgency == :warning ? 'warning' : 'danger') %>">
-                    Expires in <%= days %> <%= 'day'.pluralize(days) %>
+                  <span class="badge badge-<%= entry.expiry_urgency == :ok ? 'success' : (entry.expiry_urgency == :warning ? 'warning' : 'danger') %>" title="Expires in <%= days %> <%= 'day'.pluralize(days) %>">
+                    &#128337; <%= days %>d
                   </span>
                 <% end %>
                 <% if entry.synced %>
@@ -31,7 +31,7 @@
                   <span class="badge badge-info">Pending sync</span>
                 <% end %>
                 <%= link_to download_entry_path(entry), class: "btn btn-secondary btn-small", title: "Download as Markdown" do %>
-                  &#8595; MD
+                  &#8595;
                 <% end %>
                 <%= button_to entry_path(entry), method: :delete, class: "btn btn-ghost btn-small", title: "Delete entry",
                             data: { turbo_confirm: "Delete this entry? This cannot be undone." } do %>

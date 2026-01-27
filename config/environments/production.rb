@@ -70,8 +70,8 @@ Rails.application.configure do
   config.active_record.attributes_for_inspect = [ :id ]
 
   # Allow reading unencrypted data during encryption migration
-  # Set SUPPORT_UNENCRYPTED_DATA=false after running `rake encryption:migrate`
-  config.active_record.encryption.support_unencrypted_data = ENV.fetch("SUPPORT_UNENCRYPTED_DATA", "true") == "true"
+  # Set SUPPORT_UNENCRYPTED_DATA=true if you need to re-run encryption migration
+  config.active_record.encryption.support_unencrypted_data = ENV["SUPPORT_UNENCRYPTED_DATA"] == "true"
 
   # Enable DNS rebinding protection and other `Host` header attacks.
   # config.hosts = [

@@ -2217,10 +2217,6 @@ tr:hover td {
   color: var(--color-gray-500);
 }
 
-.hide-desktop {
-  display: none;
-}
-
 /* Responsive */
 @media (max-width: 768px) {
   .navbar {
@@ -2244,8 +2240,22 @@ tr:hover td {
     display: none;
   }
 
-  .hide-desktop {
-    display: flex;
+  .dashboard-actions-hero {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin: 1rem 0 1.5rem;
+  }
+
+  .dashboard-action-card {
+    padding: 1rem 1.25rem;
+  }
+
+  .dashboard-action-icon {
+    font-size: 2rem;
+  }
+
+  .dashboard-action-text strong {
+    font-size: 1rem;
   }
 
   .landing-logo-icon {

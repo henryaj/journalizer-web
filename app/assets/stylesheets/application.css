@@ -878,48 +878,53 @@ tr:hover td {
   justify-content: center;
 }
 
-.pagy nav {
-  display: flex;
+.pagination-wrapper nav.pagy {
+  display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--color-gray-300);
+  background: white;
 }
 
-.pagy nav a,
-.pagy nav span {
+.pagination-wrapper nav.pagy a,
+.pagination-wrapper nav.pagy span {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 2.25rem;
-  height: 2.25rem;
-  padding: 0 0.5rem;
+  min-width: 2.5rem;
+  height: 2.5rem;
+  padding: 0 0.75rem;
   font-size: 0.875rem;
   font-weight: 500;
-  border-radius: var(--radius);
   text-decoration: none;
   transition: all 0.15s;
+  border-right: 1px solid var(--color-gray-300);
 }
 
-.pagy nav a {
+.pagination-wrapper nav.pagy a:last-child,
+.pagination-wrapper nav.pagy span:last-child {
+  border-right: none;
+}
+
+.pagination-wrapper nav.pagy a {
   color: var(--color-gray-700);
   background: white;
-  border: 1px solid var(--color-gray-300);
 }
 
-.pagy nav a:hover {
-  background: var(--color-gray-50);
-  border-color: var(--color-gray-400);
+.pagination-wrapper nav.pagy a:hover {
+  background: var(--color-gray-100);
   text-decoration: none;
 }
 
-.pagy nav span.current {
+.pagination-wrapper nav.pagy span.current {
   background: var(--color-primary);
   color: white;
-  border: 1px solid var(--color-primary);
 }
 
-.pagy nav span.gap {
+.pagination-wrapper nav.pagy span.gap {
   color: var(--color-gray-400);
-  border: none;
+  background: var(--color-gray-50);
 }
 
 /* Pricing */

@@ -40,6 +40,7 @@ module Api
 
         render json: {
           job_id: job.id,
+          job_number: job.user_job_number,
           status: job.status,
           page_count: page_count,
           status_url: api_v1_transcription_url(job)
@@ -52,6 +53,7 @@ module Api
 
         render json: {
           id: job.id,
+          job_number: job.user_job_number,
           status: job.status,
           page_count: job.page_count,
           error: job.error_message,

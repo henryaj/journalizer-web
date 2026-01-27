@@ -22,6 +22,7 @@ class TranscriptionJob < ApplicationRecord
   scope :awaiting_credits, -> { where(status: :awaiting_credits) }
   scope :awaiting_review, -> { where(status: :awaiting_review) }
 
+  before_create :assign_user_job_number
   after_create :set_expiration
 
   def mark_reviewed!
@@ -103,6 +104,11 @@ class TranscriptionJob < ApplicationRecord
   end
 
   private
+
+  def assign_user_job_number
+    max_number = user.transcription_jobs.maximum(:user_job_number) || 0
+    self.user_job_number = max_number + 1
+  end
 
   def set_expiration
     update_column(:expires_at, 30.days.from_now)

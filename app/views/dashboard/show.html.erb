@@ -26,7 +26,7 @@
       <% review_jobs.each do |job| %>
         <div class="entry-item">
           <div>
-            <span class="entry-date">Job #<%= job.id %></span>
+            <span class="entry-date">Job #<%= job.user_job_number %></span>
             <span class="entry-meta"> - <%= job.page_count %> pages</span>
           </div>
           <div style="display: flex; align-items: center; gap: 0.5rem;">
@@ -53,7 +53,7 @@
       <% awaiting_jobs.each do |job| %>
         <div class="entry-item">
           <div>
-            <span class="entry-date">Job #<%= job.id %></span>
+            <span class="entry-date">Job #<%= job.user_job_number %></span>
             <span class="entry-meta"> - <%= job.page_count %> pages</span>
           </div>
           <div style="display: flex; align-items: center; gap: 0.5rem;">
@@ -78,7 +78,7 @@
       <% processing_jobs.each do |job| %>
         <div class="entry-item">
           <div>
-            <span class="entry-date">Job #<%= job.id %></span>
+            <span class="entry-date">Job #<%= job.user_job_number %></span>
             <span class="entry-meta"> - <%= job.page_count %> pages</span>
           </div>
           <span class="badge badge-warning"><%= job.status.humanize %></span>

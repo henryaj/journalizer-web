@@ -1,0 +1,115 @@
+<div class="page-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+  <div>
+    <h1 class="page-title">Analytics Dashboard</h1>
+    <p class="page-subtitle">Admin overview of Journalizer metrics</p>
+  </div>
+  <div>
+    <%= form_with url: admin_analytics_path, method: :get, local: true do %>
+      <%= select_tag :period, options_for_select(@periods, @period), class: "form-select", style: "width: auto;", onchange: "this.form.submit()" %>
+    <% end %>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="section-title">Users</h2>
+  <div class="dashboard-grid">
+    <div class="stat-card">
+      <div class="stat-label">Total Users</div>
+      <div class="stat-value"><%= number_with_delimiter(@analytics.total_users) %></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">New Users (period)</div>
+      <div class="stat-value"><%= number_with_delimiter(@analytics.new_users) %></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">OAuth / Password</div>
+      <div class="stat-value"><%= @analytics.oauth_users %> / <%= @analytics.password_users %></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Users with Entries</div>
+      <div class="stat-value"><%= number_with_delimiter(@analytics.users_with_entries) %></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Active Users (period)</div>
+      <div class="stat-value"><%= number_with_delimiter(@analytics.active_users) %></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Users with Credits</div>
+      <div class="stat-value"><%= number_with_delimiter(@analytics.users_with_credits) %></div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 2rem;">
+  <h2 class="section-title">Transcription Jobs</h2>
+  <div class="dashboard-grid">
+    <div class="stat-card">
+      <div class="stat-label">Total Jobs</div>
+      <div class="stat-value"><%= number_with_delimiter(@analytics.total_jobs) %></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Completed</div>
+      <div class="stat-value" style="color: var(--color-success);"><%= number_with_delimiter(@analytics.completed_jobs) %></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Failed</div>
+      <div class="stat-value" style="color: var(--color-danger);"><%= number_with_delimiter(@analytics.failed_jobs) %></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Currently Pending</div>
+      <div class="stat-value"><%= number_with_delimiter(@analytics.pending_jobs) %></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Pages Processed</div>
+      <div class="stat-value"><%= number_with_delimiter(@analytics.total_pages_processed) %></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Avg Pages/Job</div>
+      <div class="stat-value"><%= @analytics.average_pages_per_job %></div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 2rem;">
+  <h2 class="section-title">Journal Entries</h2>
+  <div class="dashboard-grid">
+    <div class="stat-card">
+      <div class="stat-label">Total Entries</div>
+      <div class="stat-value"><%= number_with_delimiter(@analytics.total_entries) %></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Synced</div>
+      <div class="stat-value" style="color: var(--color-success);"><%= number_with_delimiter(@analytics.synced_entries) %></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Pending Sync</div>
+      <div class="stat-value"><%= number_with_delimiter(@analytics.unsynced_entries) %></div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 2rem;">
+  <h2 class="section-title">Credits & Revenue</h2>
+  <div class="dashboard-grid">
+    <div class="stat-card">
+      <div class="stat-label">Credits Purchased</div>
+      <div class="stat-value"><%= number_with_delimiter(@analytics.total_credits_purchased) %></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Credits Used</div>
+      <div class="stat-value"><%= number_with_delimiter(@analytics.total_credits_used) %></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Bonus Credits Given</div>
+      <div class="stat-value"><%= number_with_delimiter(@analytics.total_bonus_credits) %></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Purchase Transactions</div>
+      <div class="stat-value"><%= number_with_delimiter(@analytics.purchase_count) %></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Conversion Rate</div>
+      <div class="stat-value"><%= @analytics.conversion_rate %>%</div>
+    </div>
+  </div>
+</div>

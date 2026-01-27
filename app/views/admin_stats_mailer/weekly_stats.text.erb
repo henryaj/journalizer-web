@@ -1,0 +1,27 @@
+WEEKLY STATS REPORT
+===================
+
+Here's your Journalizer summary for <%= @week_start.strftime("%B %d") %> - <%= @week_end.strftime("%B %d, %Y") %>.
+
+THIS WEEK
+---------
+New Users:           <%= @week_analytics.new_users %>
+Active Users:        <%= @week_analytics.active_users %>
+Jobs Completed:      <%= @week_analytics.completed_jobs %>
+Jobs Failed:         <%= @week_analytics.failed_jobs %>
+Pages Processed:     <%= @week_analytics.total_pages_processed %>
+Entries Created:     <%= @week_analytics.total_entries %>
+Credits Purchased:   <%= @week_analytics.total_credits_purchased %>
+Purchase Transactions: <%= @week_analytics.purchase_count %>
+
+ALL TIME TOTALS
+---------------
+Total Users:         <%= @all_time_analytics.total_users %>
+Total Jobs:          <%= @all_time_analytics.total_jobs %>
+Total Entries:       <%= @all_time_analytics.total_entries %>
+Pages Processed:     <%= @all_time_analytics.total_pages_processed %>
+Conversion Rate:     <%= @all_time_analytics.conversion_rate %>%
+
+View full dashboard: <%= admin_analytics_url %>
+
+This email is sent every Sunday at 9:00 AM UTC.

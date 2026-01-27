@@ -45,6 +45,11 @@ Rails.application.routes.draw do
     end
   end
 
+  # Admin routes
+  namespace :admin do
+    resource :analytics, only: [:show], controller: "analytics"
+  end
+
   # API routes (token-based auth)
   namespace :api do
     namespace :v1 do

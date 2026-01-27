@@ -21,3 +21,7 @@ production:
   cleanup_expired_jobs:
     class: CleanupExpiredJobsJob
     schedule: at 3:30am every day
+
+  send_weekly_stats:
+    class: SendWeeklyStatsJob
+    schedule: at 9am on Sunday

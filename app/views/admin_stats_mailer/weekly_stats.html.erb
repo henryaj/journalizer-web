@@ -1,0 +1,69 @@
+<h1>Weekly Stats Report</h1>
+
+<p>Here's your Journalizer summary for <strong><%= @week_start.strftime("%B %d") %> - <%= @week_end.strftime("%B %d, %Y") %></strong>.</p>
+
+<h2 style="margin-top: 24px; font-size: 18px; color: #1a1a1a;">This Week</h2>
+
+<table style="width: 100%; border-collapse: collapse; margin-top: 12px;">
+  <tr>
+    <td style="padding: 8px 0; border-bottom: 1px solid #eee; color: #666;">New Users</td>
+    <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right; font-weight: 600;"><%= @week_analytics.new_users %></td>
+  </tr>
+  <tr>
+    <td style="padding: 8px 0; border-bottom: 1px solid #eee; color: #666;">Active Users</td>
+    <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right; font-weight: 600;"><%= @week_analytics.active_users %></td>
+  </tr>
+  <tr>
+    <td style="padding: 8px 0; border-bottom: 1px solid #eee; color: #666;">Jobs Completed</td>
+    <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right; font-weight: 600;"><%= @week_analytics.completed_jobs %></td>
+  </tr>
+  <tr>
+    <td style="padding: 8px 0; border-bottom: 1px solid #eee; color: #666;">Jobs Failed</td>
+    <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right; font-weight: 600;"><%= @week_analytics.failed_jobs %></td>
+  </tr>
+  <tr>
+    <td style="padding: 8px 0; border-bottom: 1px solid #eee; color: #666;">Pages Processed</td>
+    <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right; font-weight: 600;"><%= @week_analytics.total_pages_processed %></td>
+  </tr>
+  <tr>
+    <td style="padding: 8px 0; border-bottom: 1px solid #eee; color: #666;">Entries Created</td>
+    <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right; font-weight: 600;"><%= @week_analytics.total_entries %></td>
+  </tr>
+  <tr>
+    <td style="padding: 8px 0; border-bottom: 1px solid #eee; color: #666;">Credits Purchased</td>
+    <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right; font-weight: 600;"><%= @week_analytics.total_credits_purchased %></td>
+  </tr>
+  <tr>
+    <td style="padding: 8px 0; color: #666;">Purchase Transactions</td>
+    <td style="padding: 8px 0; text-align: right; font-weight: 600;"><%= @week_analytics.purchase_count %></td>
+  </tr>
+</table>
+
+<h2 style="margin-top: 32px; font-size: 18px; color: #1a1a1a;">All Time Totals</h2>
+
+<table style="width: 100%; border-collapse: collapse; margin-top: 12px;">
+  <tr>
+    <td style="padding: 8px 0; border-bottom: 1px solid #eee; color: #666;">Total Users</td>
+    <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right; font-weight: 600;"><%= @all_time_analytics.total_users %></td>
+  </tr>
+  <tr>
+    <td style="padding: 8px 0; border-bottom: 1px solid #eee; color: #666;">Total Jobs</td>
+    <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right; font-weight: 600;"><%= @all_time_analytics.total_jobs %></td>
+  </tr>
+  <tr>
+    <td style="padding: 8px 0; border-bottom: 1px solid #eee; color: #666;">Total Entries</td>
+    <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right; font-weight: 600;"><%= @all_time_analytics.total_entries %></td>
+  </tr>
+  <tr>
+    <td style="padding: 8px 0; border-bottom: 1px solid #eee; color: #666;">Total Pages Processed</td>
+    <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right; font-weight: 600;"><%= @all_time_analytics.total_pages_processed %></td>
+  </tr>
+  <tr>
+    <td style="padding: 8px 0; color: #666;">Conversion Rate</td>
+    <td style="padding: 8px 0; text-align: right; font-weight: 600;"><%= @all_time_analytics.conversion_rate %>%</td>
+  </tr>
+</table>
+
+<p style="margin-top: 24px;"><a href="<%= admin_analytics_url %>" class="btn">View Full Dashboard</a></p>
+
+<p class="muted" style="margin-top: 24px;">This email is sent every Sunday at 9:00 AM UTC.</p>

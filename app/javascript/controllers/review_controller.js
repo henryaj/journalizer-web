@@ -136,9 +136,21 @@ export default class extends Controller {
   }
 
   updateUI() {
+    this.updateInstructions()
     this.updateGroupBadges()
     this.updateGroupsDisplay()
     this.updateFormInputs()
+  }
+
+  updateInstructions() {
+    const dateParsingEnabled = this.dateParsingTarget.checked
+    const p = this.instructionsTarget.querySelector('p')
+
+    if (dateParsingEnabled) {
+      p.textContent = 'Pages will be automatically split into entries by detected dates. Drag to combine pages that should be processed together.'
+    } else {
+      p.textContent = 'Drag images together to combine them into a single entry, or leave separate.'
+    }
   }
 
   updateGroupBadges() {

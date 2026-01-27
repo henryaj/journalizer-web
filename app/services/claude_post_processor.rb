@@ -39,10 +39,11 @@ class ClaudePostProcessor
     Instructions:
     1. Remove any page headers and page numbers
     2. Look for dates in any format (e.g., "Thursday, December 25", "Dec 28", "25/12/24")
-    3. If there are multiple dated entries, split them
-    4. Track which page(s) each entry spans (0-indexed)
-    5. Convert dates to ISO format (YYYY-MM-DD).%{year_instruction}
-    6. Generate a brief title (3-8 words) summarizing the entry's main theme or topic
+    3. If there are multiple dated entries on DIFFERENT dates, split them into separate entries
+    4. If there are multiple entries on the SAME date, combine them into ONE entry for that date
+    5. Track which page(s) each entry spans (0-indexed)
+    6. Convert dates to ISO format (YYYY-MM-DD).%{year_instruction}
+    7. Generate a brief title (3-8 words) summarizing the entry's main theme or topic
 
     Use the submit_entries tool to return the processed entries.
   PROMPT

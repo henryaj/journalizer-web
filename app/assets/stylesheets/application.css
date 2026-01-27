@@ -141,6 +141,14 @@ a:hover {
   border-radius: 9999px;
   font-size: 0.875rem;
   font-weight: 500;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.credit-badge:hover {
+  background: var(--color-primary);
+  color: white;
+  text-decoration: none;
 }
 
 /* Main Content */
@@ -1507,6 +1515,8 @@ tr:hover td {
 }
 
 .text-right { text-align: right; }
+.text-success { color: var(--color-success); }
+.text-danger { color: var(--color-danger); }
 .mt-1 { margin-top: 0.25rem; }
 .mt-2 { margin-top: 0.5rem; }
 .mt-4 { margin-top: 1rem; }
@@ -1514,6 +1524,84 @@ tr:hover td {
 .mt-8 { margin-top: 2rem; }
 .mb-4 { margin-bottom: 1rem; }
 .mb-6 { margin-bottom: 1.5rem; }
+
+/* Account Page */
+.account-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.account-info {
+  margin-top: 1rem;
+}
+
+.account-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--color-gray-200);
+}
+
+.account-row:last-child {
+  border-bottom: none;
+}
+
+.account-label {
+  color: var(--color-gray-500);
+  font-size: 0.9375rem;
+}
+
+.account-value {
+  color: var(--color-gray-900);
+  font-weight: 500;
+}
+
+.credit-summary {
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.credit-balance-large {
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.credit-balance-label {
+  color: var(--color-gray-500);
+  margin-top: 0.5rem;
+}
+
+.transaction-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 9999px;
+}
+
+.transaction-purchase {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.transaction-usage {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.transaction-bonus {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.transaction-refund {
+  background: #f3e8ff;
+  color: #6b21a8;
+}
 
 /* Review Page */
 .review-container {

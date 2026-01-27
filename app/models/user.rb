@@ -8,6 +8,10 @@ class User < ApplicationRecord
     "on_sync" => { label: "Delete on sync", days: nil }
   }.freeze
 
+  encrypts :email_address, deterministic: true, downcase: true
+  encrypts :name
+  encrypts :stripe_customer_id
+
   has_secure_password validations: false  # We handle password validation manually
   has_many :sessions, dependent: :destroy
   has_many :api_tokens, dependent: :destroy

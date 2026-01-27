@@ -84,13 +84,38 @@ You'll need accounts with:
    STRIPE_PRICE_100=price_xxx
    ```
 
-4. **Set up the database**
+4. **Set up encryption keys**
+
+   Generate encryption keys for ActiveRecord encryption:
+
+   ```bash
+   bin/rails db:encryption:init
+   ```
+
+   Add the output to your credentials file:
+
+   ```bash
+   bin/rails credentials:edit
+   ```
+
+   Paste the generated keys:
+
+   ```yaml
+   active_record_encryption:
+     primary_key: <generated_key>
+     deterministic_key: <generated_key>
+     key_derivation_salt: <generated_salt>
+   ```
+
+   **Important:** Save your `config/master.key` securely. You'll need it for deployment.
+
+5. **Set up the database**
 
    ```bash
    bin/rails db:create db:migrate
    ```
 
-5. **Start the server**
+6. **Start the server**
 
    ```bash
    bin/dev
@@ -117,6 +142,19 @@ The app is designed to run on any platform that supports Rails:
 - **Fly.io** - `fly launch`
 - **Docker** - Dockerfile included
 - **VPS** - Standard Rails deployment with Puma
+
+**Required for deployment:** Set `RAILS_MASTER_KEY` environment variable to the contents of `config/master.key`.
+
+### Encryption
+
+Journal content and user data are encrypted at rest using ActiveRecord encryption. The following fields are encrypted:
+
+- **JournalEntry**: `title`, `content`
+- **JobPage**: `raw_ocr_text`
+- **User**: `email_address`, `name`, `stripe_customer_id`
+- **Session**: `ip_address`
+
+Encryption keys are stored in Rails credentials (encrypted with `RAILS_MASTER_KEY`). Keep your master key secure - losing it means losing access to all encrypted data.
 
 ## Development
 

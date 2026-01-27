@@ -3,6 +3,9 @@ class JournalEntry < ApplicationRecord
   belongs_to :transcription_job, optional: true
   has_many_attached :images
 
+  encrypts :title
+  encrypts :content
+
   validates :title, presence: true
   validates :content, presence: true
 

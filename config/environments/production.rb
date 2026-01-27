@@ -69,6 +69,10 @@ Rails.application.configure do
   # Only use :id for inspections in production.
   config.active_record.attributes_for_inspect = [ :id ]
 
+  # Allow reading unencrypted data during encryption migration.
+  # Remove this after running `rake encryption:migrate` on all environments.
+  config.active_record.encryption.support_unencrypted_data = true
+
   # Enable DNS rebinding protection and other `Host` header attacks.
   # config.hosts = [
   #   "example.com",     # Allow requests from example.com

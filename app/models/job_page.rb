@@ -3,6 +3,8 @@ class JobPage < ApplicationRecord
   belongs_to :page_group, optional: true
   has_one_attached :image
 
+  encrypts :raw_ocr_text
+
   enum :status, {
     pending: "pending",
     skipped: "skipped",

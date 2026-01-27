@@ -32,13 +32,6 @@
     </div>
   </div>
 
-  <div class="stat-card">
-    <div class="stat-label">API Access</div>
-    <div class="stat-value"><%= Current.user.api_tokens.active.count %> <span style="font-size: 1rem; font-weight: normal; color: var(--color-gray-500);">tokens</span></div>
-    <div class="stat-action">
-      <%= link_to "Manage tokens", api_tokens_path, class: "btn btn-secondary btn-small" %>
-    </div>
-  </div>
 </div>
 
 <% review_jobs = @pending_jobs.select(&:awaiting_review?) %>

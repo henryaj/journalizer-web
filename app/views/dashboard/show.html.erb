@@ -1,9 +1,26 @@
 <div class="dashboard-header" style="display: flex; justify-content: space-between; align-items: center;">
   <h1 class="dashboard-title">Dashboard</h1>
-  <div style="display: flex; gap: 0.5rem;">
+  <div class="dashboard-header-actions hide-desktop" style="display: flex; gap: 0.5rem;">
     <%= link_to "Capture", camera_path, class: "btn btn-primary" %>
     <%= link_to "Upload", new_upload_path, class: "btn btn-secondary" %>
   </div>
+</div>
+
+<div class="dashboard-actions-hero hide-mobile">
+  <%= link_to camera_path, class: "dashboard-action-card" do %>
+    <div class="dashboard-action-icon">&#128247;</div>
+    <div class="dashboard-action-text">
+      <strong>Capture</strong>
+      <span>Take photos with your camera</span>
+    </div>
+  <% end %>
+  <%= link_to new_upload_path, class: "dashboard-action-card" do %>
+    <div class="dashboard-action-icon">&#128228;</div>
+    <div class="dashboard-action-text">
+      <strong>Upload</strong>
+      <span>Upload existing images</span>
+    </div>
+  <% end %>
 </div>
 
 <% if @credit_balance == 0 %>

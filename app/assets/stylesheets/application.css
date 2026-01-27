@@ -2168,6 +2168,59 @@ tr:hover td {
   font-size: 1.125rem;
 }
 
+/* Dashboard Action Hero */
+.dashboard-actions-hero {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin: 1.5rem 0 2rem;
+}
+
+.dashboard-action-card {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.5rem 2rem;
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  border: 2px solid transparent;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.dashboard-action-card:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+
+.dashboard-action-icon {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.dashboard-action-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.dashboard-action-text strong {
+  font-size: 1.25rem;
+  color: var(--color-gray-900);
+}
+
+.dashboard-action-text span {
+  font-size: 0.875rem;
+  color: var(--color-gray-500);
+}
+
+.hide-desktop {
+  display: none;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .navbar {
@@ -2189,6 +2242,10 @@ tr:hover td {
 
   .hide-mobile {
     display: none;
+  }
+
+  .hide-desktop {
+    display: flex;
   }
 
   .landing-logo-icon {

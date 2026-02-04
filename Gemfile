@@ -44,6 +44,7 @@ gem "rubyzip"
 
 # PDF generation
 gem "prawn"
+gem "matrix" # Required by Prawn on Ruby 3.1+
 
 # Pagination
 gem "pagy", "~> 9.0"

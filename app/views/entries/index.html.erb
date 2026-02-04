@@ -1,6 +1,9 @@
 <div class="dashboard-header" style="display: flex; justify-content: space-between; align-items: center;">
   <h1 class="dashboard-title">All Entries</h1>
   <div style="display: flex; gap: 0.5rem;">
+    <%= link_to export_path(format: "pdf"), method: :post, class: "btn btn-secondary" do %>
+      &#128196; Export All (PDF)
+    <% end %>
     <%= link_to export_path, method: :post, class: "btn btn-secondary" do %>
       &#128230; Export All (ZIP)
     <% end %>

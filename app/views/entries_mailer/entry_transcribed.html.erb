@@ -1,0 +1,17 @@
+<h1>New Entry Transcribed</h1>
+
+<p>Hi<%= @user.display_name.present? ? " #{@user.display_name.split.first}" : "" %>!</p>
+
+<p>Your journal entry has been transcribed and is ready to view.</p>
+
+<div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 24px 0;">
+  <% if @entry.entry_date %>
+    <p style="color: #666; margin: 0 0 8px 0; font-size: 13px;"><%= @entry.entry_date.strftime("%B %d, %Y") %></p>
+  <% end %>
+  <h2 style="margin: 0 0 12px 0; font-size: 18px; color: #1a1a1a;"><%= @entry.title %></h2>
+  <p style="color: #444; white-space: pre-wrap; margin: 0;"><%= @entry.content.truncate(500) %></p>
+</div>
+
+<p><a href="<%= entries_url %>" class="btn">View All Entries</a></p>
+
+<p class="muted">You're receiving this because you enabled per-entry email notifications. <a href="<%= account_url %>">Manage preferences</a></p>

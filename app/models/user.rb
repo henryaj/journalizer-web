@@ -8,6 +8,12 @@ class User < ApplicationRecord
     "on_sync" => { label: "Delete on sync", days: nil }
   }.freeze
 
+  EMAIL_PREFERENCE_OPTIONS = {
+    "none" => { label: "No emails" },
+    "per_entry" => { label: "Email each entry immediately" },
+    "daily_digest" => { label: "Daily digest (once per day)" }
+  }.freeze
+
   encrypts :email_address, deterministic: true, downcase: true
   encrypts :name
   encrypts :stripe_customer_id

@@ -42,6 +42,9 @@ gem "aws-sdk-s3", require: false
 # ZIP file creation for exports
 gem "rubyzip"
 
+# PDF generation
+gem "prawn"
+
 # Pagination
 gem "pagy", "~> 9.0"
 

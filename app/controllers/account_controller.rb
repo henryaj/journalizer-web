@@ -16,6 +16,6 @@ class AccountController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:entry_retention)
+    params.require(:user).permit(:entry_retention, :email_preference)
   end
 end

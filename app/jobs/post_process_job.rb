@@ -25,6 +25,8 @@ class PostProcessJob < ApplicationJob
     job.mark_completed!
     Rails.logger.info "Job #{job.id} completed: #{job.journal_entries.count} entries created"
 
+    send_entry_notifications(job)
+
   rescue => e
     job.mark_failed!(e.message)
     Rails.logger.error "PostProcessJob failed for job #{job_id}: #{e.message}"
@@ -176,5 +178,13 @@ class PostProcessJob < ApplicationJob
       .gsub(/---\s*Page\s*\d+\s*---/, '')
       .strip
       .gsub(/\n{3,}/, "\n\n")
+  end
+
+  def send_entry_notifications(job)
+    return unless job.user.email_preference == "per_entry"
+
+    job.journal_entries.each do |entry|
+      EntriesMailer.entry_transcribed(entry).deliver_later
+    end
   end
 end

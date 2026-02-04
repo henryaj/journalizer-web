@@ -15,6 +15,14 @@
             class: "form-select" %>
         <p class="form-hint">How long to keep entries before auto-deleting. "Delete on sync" removes entries immediately after syncing to Obsidian.</p>
       </div>
+      <div class="form-group">
+        <%= f.label :email_preference, "Email notifications", class: "form-label" %>
+        <%= f.select :email_preference,
+            User::EMAIL_PREFERENCE_OPTIONS.map { |k, v| [v[:label], k] },
+            {},
+            class: "form-select" %>
+        <p class="form-hint">Choose how you'd like to be notified when entries are transcribed.</p>
+      </div>
       <%= f.submit "Save settings", class: "btn btn-primary" %>
     <% end %>
   </div>

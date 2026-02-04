@@ -7,17 +7,21 @@ class EntriesController < ApplicationController
 
   def download
     entry = Current.user.journal_entries.not_expired.find(params[:id])
+    date_part = entry.entry_date&.iso8601 || entry.id
 
-    filename = if entry.entry_date
-      "journal-#{entry.entry_date.iso8601}.md"
+    case params[:format]
+    when "pdf"
+      pdf_data = PdfGenerator.new(entry).generate
+      send_data pdf_data,
+        filename: "journal-#{date_part}.pdf",
+        type: "application/pdf",
+        disposition: "attachment"
     else
-      "journal-#{entry.id}.md"
+      send_data entry.to_markdown,
+        filename: "journal-#{date_part}.md",
+        type: "text/markdown",
+        disposition: "attachment"
     end
-
-    send_data entry.to_markdown,
-      filename: filename,
-      type: "text/markdown",
-      disposition: "attachment"
   end
 
   def destroy

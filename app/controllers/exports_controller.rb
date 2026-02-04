@@ -11,13 +11,22 @@ class ExportsController < ApplicationController
       return
     end
 
-    zip_data = generate_zip(entries)
     timestamp = Time.current.strftime("%Y%m%d-%H%M%S")
 
-    send_data zip_data,
-      filename: "journalizer-export-#{timestamp}.zip",
-      type: "application/zip",
-      disposition: "attachment"
+    case params[:format]
+    when "pdf"
+      pdf_data = PdfGenerator.new(entries).generate
+      send_data pdf_data,
+        filename: "journalizer-export-#{timestamp}.pdf",
+        type: "application/pdf",
+        disposition: "attachment"
+    else
+      zip_data = generate_zip(entries)
+      send_data zip_data,
+        filename: "journalizer-export-#{timestamp}.zip",
+        type: "application/zip",
+        disposition: "attachment"
+    end
   end
 
   private

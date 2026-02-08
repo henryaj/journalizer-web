@@ -47,7 +47,7 @@ gem "prawn"
 gem "matrix" # Required by Prawn on Ruby 3.1+
 
 # Pagination
-gem "pagy", "~> 9.0"
+gem "pagy", "~> 43.2"
 
 # CORS for API access from Obsidian plugin
 gem "rack-cors"

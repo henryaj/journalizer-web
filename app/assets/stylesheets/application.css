@@ -2289,4 +2289,15 @@ tr:hover td {
   .main-content {
     padding: 1rem;
   }
+
+  .entry-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .entry-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
 }

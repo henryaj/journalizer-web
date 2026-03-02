@@ -24,7 +24,7 @@ class UploadToOcrJob < ApplicationJob
 
     # Convert HEIC/HEIF to JPEG since HandwritingOCR doesn't support them
     if content_type&.match?(/heic|heif/i)
-      vips_image = Vips::Image.new_from_buffer(image_data, "")
+      vips_image = Vips::Image.new_from_buffer(image_data, "", n: 1)
       image_data = vips_image.jpegsave_buffer(Q: 90)
       content_type = "image/jpeg"
     end

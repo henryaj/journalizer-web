@@ -50,12 +50,10 @@ class UploadToOcrJob < ApplicationJob
       input.write(heic_data)
       input.flush
 
-      Tempfile.create(["jpeg_output", ".jpg"]) do |output|
-        # Use ImageMagick convert with [0] to grab only the primary image,
-        # skipping auxiliary references (HDR gain maps) that crash libheif
-        system("convert", "#{input.path}[0]", "-quality", "90", output.path, exception: true)
-        File.binread(output.path)
-      end
+      # Use vips thumbnail which is more tolerant of HEIC auxiliary images
+      # than new_from_buffer/new_from_file
+      vips_image = Vips::Image.thumbnail(input.path, 10000, height: 10000)
+      vips_image.jpegsave_buffer(Q: 90)
     end
   end
 

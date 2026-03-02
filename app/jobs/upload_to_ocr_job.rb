@@ -24,9 +24,8 @@ class UploadToOcrJob < ApplicationJob
 
     # Convert HEIC/HEIF to JPEG since HandwritingOCR doesn't support them
     if content_type&.match?(/heic|heif/i)
-      image = MiniMagick::Image.read(image_data)
-      image.format("jpg")
-      image_data = image.to_blob
+      vips_image = Vips::Image.new_from_buffer(image_data, "")
+      image_data = vips_image.jpegsave_buffer(Q: 90)
       content_type = "image/jpeg"
     end
 

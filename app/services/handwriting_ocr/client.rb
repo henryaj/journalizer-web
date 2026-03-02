@@ -7,14 +7,14 @@ module HandwritingOcr
     end
 
     # Upload an image and return the document ID
-    def upload(image_data, filename: "page.jpg")
+    def upload(image_data, filename: "page.jpg", content_type: "image/jpeg")
       response = connection.post do |req|
         req.headers["Authorization"] = "Bearer #{@api_key}"
         req.headers["Content-Type"] = "multipart/form-data"
         req.body = {
           file: Faraday::Multipart::FilePart.new(
             StringIO.new(image_data),
-            "image/jpeg",
+            content_type,
             filename
           ),
           action: "transcribe"

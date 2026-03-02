@@ -20,8 +20,19 @@ class UploadToOcrJob < ApplicationJob
     end
 
     image_data = page.image.download
+    content_type = page.image.content_type
+
+    # Convert HEIC/HEIF to JPEG since HandwritingOCR doesn't support them
+    if content_type&.match?(/heic|heif/i)
+      image = MiniMagick::Image.read(image_data)
+      image.format("jpg")
+      image_data = image.to_blob
+      content_type = "image/jpeg"
+    end
+
+    ext = content_type == "image/png" ? "png" : "jpg"
     client = HandwritingOcr::Client.new
-    doc_id = client.upload(image_data, filename: "page_#{page.page_number}.jpg")
+    doc_id = client.upload(image_data, filename: "page_#{page.page_number}.#{ext}", content_type: content_type)
 
     page.mark_ocr_submitted!(doc_id)
 

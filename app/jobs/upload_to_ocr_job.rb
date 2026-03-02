@@ -24,8 +24,7 @@ class UploadToOcrJob < ApplicationJob
 
     # Convert HEIC/HEIF to JPEG since HandwritingOCR doesn't support them
     if content_type&.match?(/heic|heif/i)
-      vips_image = Vips::Image.new_from_buffer(image_data, "", n: 1)
-      image_data = vips_image.jpegsave_buffer(Q: 90)
+      image_data = convert_heic_to_jpeg(image_data)
       content_type = "image/jpeg"
     end
 
@@ -44,6 +43,21 @@ class UploadToOcrJob < ApplicationJob
   end
 
   private
+
+  def convert_heic_to_jpeg(heic_data)
+    Tempfile.create(["heic_input", ".heic"]) do |input|
+      input.binmode
+      input.write(heic_data)
+      input.flush
+
+      Tempfile.create(["jpeg_output", ".jpg"]) do |output|
+        # Use ImageMagick convert with [0] to grab only the primary image,
+        # skipping auxiliary references (HDR gain maps) that crash libheif
+        system("convert", "#{input.path}[0]", "-quality", "90", output.path, exception: true)
+        File.binread(output.path)
+      end
+    end
+  end
 
   def check_job_failure(job)
     # If all pages have failed, mark the job as failed

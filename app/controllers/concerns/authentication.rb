@@ -18,7 +18,11 @@ module Authentication
     end
 
     def require_authentication
-      resume_session || request_authentication
+      if ENV["LOCAL_MODE"].present?
+        resume_session || auto_login_dev_user
+      else
+        resume_session || request_authentication
+      end
     end
 
     def resume_session
@@ -27,6 +31,14 @@ module Authentication
 
     def find_session_by_cookie
       Session.find_by(id: cookies.signed[:session_id]) if cookies.signed[:session_id]
+    end
+
+    def auto_login_dev_user
+      user = User.find_or_create_by!(email_address: "dev@example.com") do |u|
+        u.name = "Dev User"
+        u.password = "password123"
+      end
+      start_new_session_for(user)
     end
 
     def request_authentication

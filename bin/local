@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+PORT=3456
+
+# Check required env vars
+missing=()
+for var in HANDWRITING_OCR_API_KEY ANTHROPIC_API_KEY OBSIDIAN_VAULT_PATH; do
+  if [ -z "${!var:-}" ]; then
+    missing+=("$var")
+  fi
+done
+
+if [ ${#missing[@]} -gt 0 ]; then
+  echo "Error: missing required environment variables:"
+  for var in "${missing[@]}"; do
+    echo "  - $var"
+  done
+  echo ""
+  echo "Set them in .env or export them before running this script."
+  exit 1
+fi
+
+export LOCAL_MODE=true
+
+echo "Starting Journalizer in local mode..."
+echo "  Vault: $OBSIDIAN_VAULT_PATH"
+echo "  Folder: ${OBSIDIAN_JOURNAL_FOLDER:-Journal}"
+echo ""
+
+cleanup() {
+  echo "Shutting down..."
+  kill "$RAILS_PID" 2>/dev/null || true
+  kill "$NGROK_PID" 2>/dev/null || true
+  exit 0
+}
+trap cleanup INT TERM
+
+# Start Rails
+bin/rails server -p "$PORT" &
+RAILS_PID=$!
+
+# Wait for Rails to boot
+echo "Waiting for Rails to start on port $PORT..."
+for i in $(seq 1 30); do
+  if curl -s "http://localhost:$PORT" > /dev/null 2>&1; then
+    break
+  fi
+  sleep 1
+done
+
+# Start ngrok
+if command -v ngrok &> /dev/null; then
+  ngrok http "$PORT" --log=stdout > /dev/null &
+  NGROK_PID=$!
+  sleep 2
+
+  NGROK_URL=$(curl -s http://localhost:4040/api/tunnels | ruby -rjson -e 'puts JSON.parse(STDIN.read)["tunnels"].find{|t| t["proto"]=="https"}["public_url"]' 2>/dev/null || echo "")
+
+  if [ -n "$NGROK_URL" ]; then
+    echo ""
+    echo "========================================"
+    echo "  Open on your phone: $NGROK_URL"
+    echo "========================================"
+    echo ""
+  else
+    echo "ngrok started but couldn't detect URL. Check http://localhost:4040"
+  fi
+else
+  echo ""
+  echo "ngrok not found — access the app at http://localhost:$PORT"
+  echo "Install ngrok for phone access: https://ngrok.com/download"
+  echo ""
+fi
+
+wait "$RAILS_PID"

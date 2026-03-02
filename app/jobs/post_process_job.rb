@@ -25,6 +25,7 @@ class PostProcessJob < ApplicationJob
     job.mark_completed!
     Rails.logger.info "Job #{job.id} completed: #{job.journal_entries.count} entries created"
 
+    export_to_obsidian(job) if ENV["LOCAL_MODE"].present?
     send_entry_notifications(job)
 
   rescue => e
@@ -178,6 +179,12 @@ class PostProcessJob < ApplicationJob
       .gsub(/---\s*Page\s*\d+\s*---/, '')
       .strip
       .gsub(/\n{3,}/, "\n\n")
+  end
+
+  def export_to_obsidian(job)
+    ObsidianExporter.export_all(job.journal_entries)
+  rescue => e
+    Rails.logger.error "ObsidianExporter failed for job #{job.id}: #{e.message}"
   end
 
   def send_entry_notifications(job)

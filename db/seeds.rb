@@ -7,8 +7,9 @@ if Rails.env.development?
     dev_user.password = "password123"
     dev_user.save!
     # Set credits directly to avoid callback validation issues
-    dev_user.update_column(:credit_balance, 100)
-    puts "Created dev user: dev@example.com / password123 (100 credits)"
+    credits = ENV["LOCAL_MODE"].present? ? 999_999 : 100
+    dev_user.update_column(:credit_balance, credits)
+    puts "Created dev user: dev@example.com / password123 (#{credits} credits)"
   else
     puts "Dev user already exists: dev@example.com (#{dev_user.credit_balance} credits)"
   end

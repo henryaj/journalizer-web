@@ -55,10 +55,14 @@ class User < ApplicationRecord
   end
 
   def has_credits?(amount = 1)
+    return true if ENV["LOCAL_MODE"].present?
+
     credit_balance >= amount
   end
 
   def deduct_credits!(amount, job:)
+    return if ENV["LOCAL_MODE"].present?
+
     transaction do
       raise InsufficientCreditsError, "Insufficient credits" unless has_credits?(amount)
 

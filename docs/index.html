@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Journalizer - Turn handwritten journals into digital memories</title>
+  <meta name="description" content="Photograph your handwritten journal pages, and we'll transcribe them using AI. Join the waitlist.">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --color-primary: #6366f1;
+      --color-primary-dark: #4f46e5;
+      --color-primary-light: #818cf8;
+      --color-gray-50: #f9fafb;
+      --color-gray-300: #d1d5db;
+      --color-gray-500: #6b7280;
+      --color-gray-700: #374151;
+      --color-gray-900: #111827;
+      --font-sans: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      color: var(--color-gray-700);
+      background:
+        radial-gradient(circle, var(--color-gray-300) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--color-gray-50), white 300px);
+      background-size: 24px 24px, 100% 100%;
+      background-position: 12px 12px, 0 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 1rem;
+    }
+
+    .container {
+      max-width: 640px;
+      width: 100%;
+      text-align: center;
+      padding: 6rem 0 4rem;
+      flex: 1;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .logo svg {
+      width: 48px;
+      height: 48px;
+    }
+
+    .logo-text {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--color-gray-900);
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--color-gray-900);
+      line-height: 1.2;
+      margin-bottom: 1.25rem;
+    }
+
+    .subtitle {
+      font-size: 1.125rem;
+      line-height: 1.6;
+      color: var(--color-gray-500);
+      margin-bottom: 2.5rem;
+    }
+
+    .waitlist-form {
+      display: flex;
+      gap: 0.5rem;
+      max-width: 440px;
+      margin: 0 auto 1rem;
+    }
+
+    .waitlist-form input[type="email"] {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      font-family: var(--font-sans);
+      font-size: 1rem;
+      border: 2px solid var(--color-gray-300);
+      border-radius: 0.5rem;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .waitlist-form input[type="email"]:focus {
+      border-color: var(--color-primary);
+    }
+
+    .waitlist-form button {
+      padding: 0.75rem 1.5rem;
+      font-family: var(--font-sans);
+      font-size: 1rem;
+      font-weight: 600;
+      color: white;
+      background: var(--color-primary);
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: background 0.15s;
+      white-space: nowrap;
+    }
+
+    .waitlist-form button:hover {
+      background: var(--color-primary-dark);
+    }
+
+    .privacy-note {
+      font-size: 0.875rem;
+      color: var(--color-gray-500);
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 4rem;
+      text-align: center;
+    }
+
+    .feature-icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .feature h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--color-gray-900);
+      margin-bottom: 0.25rem;
+    }
+
+    .feature p {
+      font-size: 0.875rem;
+      color: var(--color-gray-500);
+    }
+
+    footer {
+      width: 100%;
+      max-width: 640px;
+      text-align: center;
+      padding: 2rem 0;
+      font-size: 0.875rem;
+      color: var(--color-gray-500);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    footer a {
+      color: var(--color-primary);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 480px) {
+      .container { padding: 4rem 0 3rem; }
+      h1 { font-size: 1.75rem; }
+      .subtitle { font-size: 1rem; }
+      .waitlist-form { flex-direction: column; }
+      .features { grid-template-columns: 1fr; gap: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="8" y="4" width="28" height="40" rx="2" fill="#6366f1"/>
+        <rect x="12" y="8" width="20" height="32" rx="1" fill="white"/>
+        <path d="M16 16h12M16 22h12M16 28h8" stroke="#6366f1" stroke-width="2" stroke-linecap="round"/>
+        <path d="M34 12l8-8 4 4-8 8-4 0z" fill="#818cf8"/>
+        <path d="M38 8l4 4" stroke="#4f46e5" stroke-width="1.5"/>
+      </svg>
+      <span class="logo-text">Journalizer</span>
+    </div>
+
+    <h1>Turn handwritten journals<br>into digital memories</h1>
+    <p class="subtitle">
+      Photograph your handwritten journal pages, and we'll transcribe them using AI.
+      Search, organize, and sync your entries to Obsidian.
+    </p>
+
+    <form class="waitlist-form" action="https://formspree.io/f/xeelbggy" method="POST">
+      <input type="email" name="email" placeholder="you@example.com" required>
+      <button type="submit">Join the waitlist</button>
+    </form>
+    <p class="privacy-note">We'll only email you when we launch.</p>
+
+    <div class="features">
+      <div class="feature">
+        <div class="feature-icon">&#128247;</div>
+        <h3>Snap a photo</h3>
+        <p>Upload a photo of your handwritten journal page</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">&#9997;&#65039;</div>
+        <h3>AI transcription</h3>
+        <p>Advanced OCR turns your handwriting into searchable text</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">&#128218;</div>
+        <h3>Sync to Obsidian</h3>
+        <p>Export your entries directly to your Obsidian vault</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <span>A <a href="https://blmc.dev">Bloom Computing</a> production</span>
+    <span><a href="https://github.com/henryaj/journalizer-web">Open source on GitHub</a></span>
+  </footer>
+</body>
+</html>

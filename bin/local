@@ -3,6 +3,13 @@ set -euo pipefail
 
 PORT=3456
 
+# Load .env file if present (supports KEY=VALUE format without 'export')
+if [ -f .env ]; then
+  set -a
+  source .env
+  set +a
+fi
+
 # Check required env vars
 missing=()
 for var in HANDWRITING_OCR_API_KEY ANTHROPIC_API_KEY OBSIDIAN_VAULT_PATH; do
@@ -31,10 +38,16 @@ echo ""
 cleanup() {
   echo "Shutting down..."
   kill "$RAILS_PID" 2>/dev/null || true
+  kill "$SQ_PID" 2>/dev/null || true
   kill "$NGROK_PID" 2>/dev/null || true
   exit 0
 }
 trap cleanup INT TERM
+
+# Start Solid Queue worker
+bin/rails solid_queue:start &
+SQ_PID=$!
+echo "Solid Queue worker started (PID: $SQ_PID)"
 
 # Start Rails
 bin/rails server -p "$PORT" &

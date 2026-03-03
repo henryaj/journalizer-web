@@ -31,8 +31,7 @@ class ObsidianExporter
 
   def filename(entry)
     date = entry.entry_date&.iso8601 || entry.created_at.strftime("%Y-%m-%d")
-    title = sanitize_filename(entry.title)
-    "#{date} #{title}.md"
+    "#{date}.md"
   end
 
   def sanitize_filename(name)
@@ -51,8 +50,9 @@ class ObsidianExporter
       image_filename = "journal-#{date_prefix}-#{i.to_s.rjust(3, '0')}.jpg"
       image_path = File.join(journal_dir, image_filename)
 
-      File.open(image_path, "wb") do |f|
-        f.write(image.download)
+      image.open do |tempfile|
+        vips_image = Vips::Image.new_from_file(tempfile.path)
+        vips_image.jpegsave(image_path, Q: 85)
       end
     end
   end

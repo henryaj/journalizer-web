@@ -96,3 +96,102 @@ jobs:
       - name: Build plugin
         working-directory: obsidian-plugin
         run: npm run build
+
+  build:
+    # Gated on the checks that are a function of the commit. Only `test` can
+    # actually block: `lint` is continue-on-error, so it is here for ordering
+    # and its annotations, not as a gate.
+    # Deliberately not on dependency scanners: those go red when someone else
+    # publishes an advisory, so gating on them lets an unrelated CVE block an
+    # urgent fix.
+    needs: [test, lint]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      digest: ${{ steps.push.outputs.digest }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # No build secrets needed: the Dockerfile precompiles assets with
+      # SECRET_KEY_BASE_DUMMY=1, so RAILS_MASTER_KEY stays a runtime-only value.
+      - id: push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          platforms: linux/amd64
+          tags: |
+            ghcr.io/henryaj/journalizer-web:latest
+            ghcr.io/henryaj/journalizer-web:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    # A wedged ssh session should fail the deploy, not hold the concurrency
+    # group (and a runner) for the default six hours.
+    timeout-minutes: 20
+    # Only actual deploys need serialising — keeping this off the workflow level
+    # means PR check runs don't queue behind (and evict) each other.
+    concurrency:
+      group: deploy-journalizer-web
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - name: Pull and restart on hetzner
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+          # Short-lived, job-scoped, good for `packages: read`. Piped to the box
+          # over stdin so no long-lived registry credential lives there.
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # The default runner shell is `bash -e`, without pipefail: without
+          # this, `tee` at the end of the pipeline masks a failing ssh and the
+          # deploy step goes green on a deploy that never happened.
+          set -euo pipefail
+          install -m 700 -d ~/.ssh
+          # umask, not a follow-up chmod: the key is never briefly world-readable.
+          (umask 077; printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key)
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          # No command argument: authorized_keys pins one server-side.
+          printf '%s\n' "$GHCR_TOKEN" \
+            | ssh -T -i ~/.ssh/deploy_key -o BatchMode=yes "deploy@${DEPLOY_HOST}" \
+            | tee deploy.log
+
+      - name: Verify the running container is on the image we just pushed
+        env:
+          EXPECTED_DIGEST: ${{ needs.build.outputs.digest }}
+        run: |
+          set -euo pipefail
+          # Without this an empty digest turns the grep below into a prefix
+          # match that any DEPLOYED_DIGEST line satisfies.
+          if [ -z "$EXPECTED_DIGEST" ]; then
+            echo "::error::build job produced no image digest"
+            exit 1
+          fi
+          # Compares the digest the box reports against the one we pushed, which
+          # also catches an `up -d` that silently didn't recreate anything.
+          # (postgres runs its own image and is skipped by the script.)
+          if grep -qF "DEPLOYED_DIGEST=${EXPECTED_DIGEST}" deploy.log; then
+            echo "box is running ${EXPECTED_DIGEST} — deploy confirmed"
+          else
+            echo "::error::box did not report the digest we pushed (${EXPECTED_DIGEST})"
+            grep -F 'DEPLOYED_DIGEST=' deploy.log || echo "(no DEPLOYED_DIGEST line at all)"
+            exit 1
+          fi

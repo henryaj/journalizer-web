@@ -88,9 +88,20 @@ production:
   primary: &primary_production
     <<: *default
     url: <%= ENV["DATABASE_URL"] %>
+  # Solid Cache and Solid Queue get their own databases. They can share the
+  # primary one, but then `db:prepare` never loads db/cache_schema.rb or
+  # db/queue_schema.rb: it only loads a schema for a database it had to create,
+  # and the primary already exists by that point. The app boots, and the first
+  # cache write or job enqueue is what tells you the tables are missing.
+  #
+  # These have to be set here rather than left to CACHE_DATABASE_URL /
+  # QUEUE_DATABASE_URL alone — an explicit `url:` in this file wins over the
+  # environment variable, and these configs inherit one from primary.
   cache:
     <<: *primary_production
+    url: <%= ENV.fetch("CACHE_DATABASE_URL") { ENV["DATABASE_URL"] } %>
     migrations_paths: db/cache_migrate
   queue:
     <<: *primary_production
+    url: <%= ENV.fetch("QUEUE_DATABASE_URL") { ENV["DATABASE_URL"] } %>
     migrations_paths: db/queue_migrate

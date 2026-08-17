@@ -24,14 +24,12 @@ Rails.application.configure do
   # Store uploaded files on S3 in production (see config/storage.yml for options).
   config.active_storage.service = :amazon
 
-  # Assume all access to the app is happening through a SSL-terminating reverse proxy.
-  # config.assume_ssl = true
+  # Caddy terminates TLS and proxies plain HTTP to us, so the request never
+  # looks secure from in here unless we say so.
+  config.assume_ssl = true
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  # config.force_ssl = true
-
-  # Skip http-to-https redirect for the default health check endpoint.
-  # config.ssl_options = { redirect: { exclude: ->(request) { request.path == "/up" } } }
+  config.force_ssl = true
 
   # Log to STDOUT with the current request id as a default log tag.
   config.log_tags = [ :request_id ]
@@ -57,7 +55,12 @@ Rails.application.configure do
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.delivery_method = :postmark
   config.action_mailer.postmark_settings = { api_token: ENV["POSTMARK_API_TOKEN"] }
-  config.action_mailer.default_url_options = { host: "journalizer.app" }
+  # protocol matters: force_ssl means an http:// link in an email is just a
+  # redirect the recipient's client has to follow (or silently drop).
+  config.action_mailer.default_url_options = {
+    host: ENV.fetch("APP_HOST", "journalizer.blmc.dev"),
+    protocol: "https"
+  }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).

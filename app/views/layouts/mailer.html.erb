@@ -84,13 +84,15 @@
     <div class="email-wrapper">
       <div class="email-content">
         <div class="email-header">
-          <a href="https://journalizer.app" class="email-logo">Journalizer</a>
+          <a href="<%= root_url %>" class="email-logo">Journalizer</a>
         </div>
         <div class="email-body">
           <%= yield %>
         </div>
         <div class="email-footer">
-          <p>&copy; <%= Date.current.year %> Journalizer &middot; <a href="https://journalizer.app">journalizer.app</a></p>
+          <% home = URI(root_url) %>
+          <% home_label = home.port == home.default_port ? home.host : "#{home.host}:#{home.port}" %>
+          <p>&copy; <%= Date.current.year %> Journalizer &middot; <a href="<%= home %>"><%= home_label %></a></p>
         </div>
       </div>
     </div>

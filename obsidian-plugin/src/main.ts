@@ -1,6 +1,7 @@
 import { Plugin, Notice } from "obsidian";
 import { JournalizerSettings, DEFAULT_SETTINGS, JournalizerSettingTab } from "./settings";
 import { SyncEngine } from "./sync";
+import { CorrectionPromptModal } from "./correction-prompt";
 
 export default class JournalizerPlugin extends Plugin {
   settings: JournalizerSettings;
@@ -21,6 +22,19 @@ export default class JournalizerPlugin extends Plugin {
       name: "Sync journal entries",
       callback: async () => {
         await this.runSync(false);
+      },
+    });
+
+    this.addCommand({
+      id: "show-correction-prompt",
+      name: "Show correction prompt for last sync",
+      callback: () => {
+        const paths = this.settings.lastSyncedPaths;
+        if (paths.length === 0) {
+          new Notice("No entries have been synced yet");
+          return;
+        }
+        new CorrectionPromptModal(this.app, paths).open();
       },
     });
 
@@ -85,14 +99,22 @@ export default class JournalizerPlugin extends Plugin {
 
     try {
       const syncEngine = new SyncEngine(this.app, this.settings);
-      const count = await syncEngine.sync(fullSync);
+      const { count, paths } = await syncEngine.sync(fullSync);
 
       this.settings.lastSyncTime = new Date().toISOString();
+      // A full sync re-downloads the whole archive, so its paths aren't a useful
+      // "here's what just came in" list - only track incremental syncs.
+      if (!fullSync && paths.length > 0) {
+        this.settings.lastSyncedPaths = paths;
+      }
       await this.saveSettings();
       this.updateStatusBar();
 
       if (count > 0) {
         new Notice(`Synced ${count} journal ${count === 1 ? "entry" : "entries"}`);
+        if (!silent && !fullSync) {
+          new CorrectionPromptModal(this.app, paths).open();
+        }
       } else if (!silent) {
         new Notice("No new entries to sync");
       }

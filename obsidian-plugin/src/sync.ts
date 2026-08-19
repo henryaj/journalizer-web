@@ -2,6 +2,13 @@ import { App, TFolder, Notice } from "obsidian";
 import { JournalizerAPI, JournalEntry } from "./api";
 import { JournalizerSettings } from "./settings";
 
+export interface SyncResult {
+  /** Number of entries written to the vault. */
+  count: number;
+  /** Unique vault-relative paths of the markdown files written, e.g. "journal/2025-01-22.md". */
+  paths: string[];
+}
+
 export class SyncEngine {
   private app: App;
   private api: JournalizerAPI;
@@ -13,7 +20,7 @@ export class SyncEngine {
     this.api = new JournalizerAPI(settings.serverUrl, settings.apiKey);
   }
 
-  async sync(fullSync: boolean = false): Promise<number> {
+  async sync(fullSync: boolean = false): Promise<SyncResult> {
     const since = fullSync ? undefined : this.settings.lastSyncTime || undefined;
 
     const { entries } = await this.api.getEntries({
@@ -22,29 +29,30 @@ export class SyncEngine {
     });
 
     if (entries.length === 0) {
-      return 0;
+      return { count: 0, paths: [] };
     }
 
     // Ensure folders exist
     await this.ensureFolder(this.settings.journalFolder);
     await this.ensureFolder(this.settings.attachmentsFolder);
 
-    let syncedCount = 0;
+    const paths: string[] = [];
 
     for (const entry of entries) {
       try {
-        await this.syncEntry(entry);
-        syncedCount++;
+        paths.push(await this.syncEntry(entry));
       } catch (error) {
         console.error(`Failed to sync entry ${entry.id}:`, error);
         new Notice(`Failed to sync entry: ${entry.title || entry.id}`);
       }
     }
 
-    return syncedCount;
+    // Two entries sharing an entry_date collapse onto the same file, so dedupe
+    // before handing the list to callers - count still reflects entries synced.
+    return { count: paths.length, paths: [...new Set(paths)] };
   }
 
-  private async syncEntry(entry: JournalEntry): Promise<void> {
+  private async syncEntry(entry: JournalEntry): Promise<string> {
     // Download and save images first
     for (let i = 0; i < entry.image_count; i++) {
       try {
@@ -68,6 +76,8 @@ export class SyncEngine {
 
     // Mark as synced on server
     await this.api.markSynced(entry.id);
+
+    return filePath;
   }
 
   private getFilename(entry: JournalEntry): string {

@@ -48,6 +48,16 @@ Sync your handwritten journal entries from [Journalizer](https://journalizer.blm
 To re-download all entries (not just new ones):
 - Use command palette: "Journalizer: Full sync"
 
+### Correction Prompt
+
+After a manual sync brings in new entries, a dialog appears with a ready-made
+prompt listing exactly which files were written. Copy it and paste it into your
+coding agent to have it fix OCR typos and mangled proper nouns using what it
+knows about you.
+
+To pull the prompt up again later (or after an auto-sync, which stays silent):
+- Use command palette: "Journalizer: Show correction prompt for last sync"
+
 ### Auto Sync
 
 1. Go to Settings > Journalizer Sync

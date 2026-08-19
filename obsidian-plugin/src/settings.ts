@@ -10,6 +10,7 @@ export interface JournalizerSettings {
   autoSync: boolean;
   syncIntervalMinutes: number;
   lastSyncTime: string | null;
+  lastSyncedPaths: string[];
 }
 
 export const DEFAULT_SETTINGS: JournalizerSettings = {
@@ -20,6 +21,7 @@ export const DEFAULT_SETTINGS: JournalizerSettings = {
   autoSync: false,
   syncIntervalMinutes: 30,
   lastSyncTime: null,
+  lastSyncedPaths: [],
 };
 
 export class JournalizerSettingTab extends PluginSettingTab {

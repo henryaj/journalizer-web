@@ -1,10 +1,20 @@
 class UploadToOcrJob < ApplicationJob
   queue_as :ocr_upload
 
+  # Well above the ~300 DPI HandwritingOCR wants for an A5 page, far below what
+  # a phone camera hands us.
+  MAX_DIMENSION = 3000
+
   # Custom retry for rate limiting
   retry_on HandwritingOcr::RateLimitError, wait: 2.seconds, attempts: 5
   retry_on Faraday::Error, wait: :polynomially_longer, attempts: 3
   discard_on ActiveRecord::RecordNotFound
+
+  def self.normalize(source_path, dest_path)
+    image = Vips::Image.thumbnail(source_path, MAX_DIMENSION, height: MAX_DIMENSION, size: :down)
+    image = image.flatten(background: 255) if image.has_alpha?
+    image.jpegsave(dest_path, Q: 90)
+  end
 
   def perform(page_id)
     page = JobPage.find(page_id)
@@ -12,50 +22,37 @@ class UploadToOcrJob < ApplicationJob
 
     page.mark_uploaded!
 
-    # Download from ActiveStorage and upload to OCR service
     unless page.image.attached?
       page.mark_failed!("No image attached")
       check_job_failure(page.transcription_job)
       return
     end
 
-    image_data = page.image.download
-    content_type = page.image.content_type
+    doc_id = page.image.open do |source|
+      Tempfile.create([ "ocr_page", ".jpg" ]) do |jpeg|
+        self.class.normalize(source.path, jpeg.path)
+        jpeg.binmode
+        jpeg.rewind
 
-    # Convert HEIC/HEIF to JPEG since HandwritingOCR doesn't support them
-    if content_type&.match?(/heic|heif/i)
-      image_data = convert_heic_to_jpeg(image_data)
-      content_type = "image/jpeg"
+        HandwritingOcr::Client.new.upload(
+          jpeg,
+          filename: "page_#{page.page_number}.jpg",
+          content_type: "image/jpeg"
+        )
+      end
     end
-
-    ext = content_type == "image/png" ? "png" : "jpg"
-    client = HandwritingOcr::Client.new
-    doc_id = client.upload(image_data, filename: "page_#{page.page_number}.#{ext}", content_type: content_type)
 
     page.mark_ocr_submitted!(doc_id)
 
     # Start polling for this page
     PollOcrResultJob.set(wait: 2.seconds).perform_later(page_id)
 
-  rescue HandwritingOcr::Error => e
+  rescue HandwritingOcr::Error, Vips::Error => e
     page.mark_failed!(e.message)
     check_job_failure(page.transcription_job)
   end
 
   private
-
-  def convert_heic_to_jpeg(heic_data)
-    Tempfile.create(["heic_input", ".heic"]) do |input|
-      input.binmode
-      input.write(heic_data)
-      input.flush
-
-      # Use vips thumbnail which is more tolerant of HEIC auxiliary images
-      # than new_from_buffer/new_from_file
-      vips_image = Vips::Image.thumbnail(input.path, 10000, height: 10000)
-      vips_image.jpegsave_buffer(Q: 90)
-    end
-  end
 
   def check_job_failure(job)
     # If all pages have failed, mark the job as failed

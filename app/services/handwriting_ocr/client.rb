@@ -6,17 +6,13 @@ module HandwritingOcr
       @api_key = api_key || ENV.fetch("HANDWRITING_OCR_API_KEY")
     end
 
-    # Upload an image and return the document ID
-    def upload(image_data, filename: "page.jpg", content_type: "image/jpeg")
+    # Upload an image (an IO, streamed) and return the document ID
+    def upload(io, filename: "page.jpg", content_type: "image/jpeg")
       response = connection.post do |req|
         req.headers["Authorization"] = "Bearer #{@api_key}"
         req.headers["Content-Type"] = "multipart/form-data"
         req.body = {
-          file: Faraday::Multipart::FilePart.new(
-            StringIO.new(image_data),
-            content_type,
-            filename
-          ),
+          file: Faraday::Multipart::FilePart.new(io, content_type, filename),
           action: "transcribe"
         }
       end

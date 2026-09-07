@@ -2,7 +2,7 @@ require "test_helper"
 
 class UploadToOcrJobTest < ActiveSupport::TestCase
   test "normalize downscales to MAX_DIMENSION and writes a JPEG" do
-    skip "libvips not available" unless defined?(Vips)
+    skip "libvips not available" unless defined?(Vips::Image)
 
     Tempfile.create([ "source", ".png" ]) do |source|
       Vips::Image.black(5000, 4000).bandjoin(255).pngsave(source.path)
@@ -19,7 +19,7 @@ class UploadToOcrJobTest < ActiveSupport::TestCase
   end
 
   test "normalize preserves the colours of an RGB image with no alpha" do
-    skip "libvips not available" unless defined?(Vips)
+    skip "libvips not available" unless defined?(Vips::Image)
 
     Tempfile.create([ "source", ".png" ]) do |source|
       base = Vips::Image.black(200, 150)
@@ -40,7 +40,7 @@ class UploadToOcrJobTest < ActiveSupport::TestCase
   end
 
   test "normalize flattens transparency onto white" do
-    skip "libvips not available" unless defined?(Vips)
+    skip "libvips not available" unless defined?(Vips::Image)
 
     Tempfile.create([ "source", ".png" ]) do |source|
       Vips::Image.black(200, 150).bandjoin(0).pngsave(source.path)

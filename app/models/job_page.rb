@@ -19,6 +19,11 @@ class JobPage < ApplicationRecord
                           uniqueness: { scope: :transcription_job_id }
 
   scope :in_order, -> { order(:page_number) }
+  scope :upload_interrupted, -> { where(status: :uploaded, handwriting_ocr_doc_id: nil) }
+
+  def upload_interrupted?
+    uploaded? && handwriting_ocr_doc_id.blank?
+  end
 
   def mark_uploaded!
     update!(status: :uploaded)

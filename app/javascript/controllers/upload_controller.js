@@ -28,21 +28,38 @@ export default class extends Controller {
   }
 
   addPreview(file) {
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      const div = document.createElement('div')
-      div.className = 'preview-item'
-      div.dataset.filename = file.name
-      if (this.currentRotation > 0) {
-        div.classList.add(`rotated-${this.currentRotation}`)
-      }
-      div.innerHTML = `
-        <img src="${e.target.result}" alt="Preview">
-        <button type="button" class="preview-remove" data-action="click->upload#removeFile" data-filename="${file.name}">&times;</button>
-      `
-      this.previewGridTarget.appendChild(div)
+    const div = document.createElement('div')
+    div.className = 'preview-item'
+    div.dataset.filename = file.name
+    if (this.currentRotation > 0) {
+      div.classList.add(`rotated-${this.currentRotation}`)
     }
-    reader.readAsDataURL(file)
+
+    const url = URL.createObjectURL(file)
+    const img = document.createElement('img')
+    img.alt = file.name
+    img.addEventListener('load', () => URL.revokeObjectURL(url), { once: true })
+    // Chrome and Firefox can't decode HEIC, so a phone photo renders as a broken
+    // image. Fall back to naming the file rather than showing nothing.
+    img.addEventListener('error', () => {
+      URL.revokeObjectURL(url)
+      img.remove()
+      const label = document.createElement('span')
+      label.className = 'preview-filename'
+      label.textContent = file.name
+      div.prepend(label)
+    }, { once: true })
+    img.src = url
+
+    const remove = document.createElement('button')
+    remove.type = 'button'
+    remove.className = 'preview-remove'
+    remove.dataset.action = 'click->upload#removeFile'
+    remove.dataset.filename = file.name
+    remove.textContent = '×'
+
+    div.append(img, remove)
+    this.previewGridTarget.appendChild(div)
   }
 
   removeFile(event) {

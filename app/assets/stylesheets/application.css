@@ -1202,6 +1202,20 @@ tr:hover td {
   object-fit: cover;
 }
 
+.preview-filename {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 0.5rem;
+  font-size: 0.75rem;
+  line-height: 1.3;
+  text-align: center;
+  word-break: break-all;
+  color: var(--color-gray-600);
+}
+
 .preview-remove {
   position: absolute;
   top: 0.5rem;

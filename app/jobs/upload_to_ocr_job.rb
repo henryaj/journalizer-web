@@ -18,7 +18,10 @@ class UploadToOcrJob < ApplicationJob
 
   def perform(page_id)
     page = JobPage.find(page_id)
-    return unless page.pending? || page.failed?
+    # mark_uploaded! runs before the API call, so a page left in uploaded with no
+    # document id never reached HandwritingOCR - the process died between the
+    # two. Without this every retry, retry_on's included, is a silent no-op.
+    return unless page.pending? || page.failed? || page.upload_interrupted?
 
     page.mark_uploaded!
 
@@ -47,6 +50,9 @@ class UploadToOcrJob < ApplicationJob
     # Start polling for this page
     PollOcrResultJob.set(wait: 2.seconds).perform_later(page_id)
 
+  rescue HandwritingOcr::RateLimitError
+    # Let retry_on back off and try again rather than burning the page.
+    raise
   rescue HandwritingOcr::Error, Vips::Error => e
     page.mark_failed!(e.message)
     check_job_failure(page.transcription_job)

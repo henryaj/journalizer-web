@@ -32,6 +32,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # The runner image has no libvips, so without this every test that
+      # touches image handling skips itself and the OCR pipeline goes
+      # unexercised — including the regression test for vips flattening an
+      # image that has no alpha channel.
+      # libvips-tools rather than the versioned library package: it depends on
+      # whatever the runtime lib is called on the release the runner happens to
+      # be on, which survives both the t64 rename and the next image bump.
+      - name: Install libvips
+        run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends libvips-tools
+
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:

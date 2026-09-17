@@ -1,5 +1,5 @@
 ---
-name: journal-import
+name: journalize
 description: Import handwritten journal photos into an Obsidian vault via the journal:ocr / journal:write rake tasks, bypassing the web UI. Use when given a folder of journal page photos to OCR, transcribe and write into the vault, or when asked about the local import pipeline.
 ---
 

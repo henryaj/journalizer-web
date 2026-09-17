@@ -169,6 +169,11 @@ bin/rails test
 bin/rubocop
 ```
 
+### Importing without the web UI
+
+`rake 'journal:ocr[dir]'` and `rake 'journal:write[dir,entries.json]'` (in `lib/tasks/import.rake`) OCR a
+folder of photos and write the entries straight into an Obsidian vault. See [LOCAL-PIPELINE.md](LOCAL-PIPELINE.md).
+
 ## License
 
 MIT

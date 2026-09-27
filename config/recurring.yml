@@ -22,10 +22,6 @@ production:
     class: CleanupExpiredJobsJob
     schedule: at 3:30am every day
 
-  send_weekly_stats:
-    class: SendWeeklyStatsJob
-    schedule: every sunday at 9am
-
   retry_stuck_jobs:
     class: RetryStuckJobsJob
     schedule: every 15 minutes
